@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Plane, Menu, MountainSnow } from "lucide-react";
+import { Plane, Menu, MountainSnow, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -9,8 +9,12 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useUser, useAuth } from "@/firebase";
+import { signOut } from "firebase/auth";
+import { useToast } from "@/hooks/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const navLinks = [
   { href: "/packages", label: "Packages" },
@@ -21,6 +25,24 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({ title: "Signed out successfully." });
+      router.push("/");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sign out failed.",
+        description: error.message,
+      });
+    }
+  };
 
   const NavLink = ({
     href,
@@ -76,15 +98,29 @@ export default function Header() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end gap-2">
-           <Button variant="ghost" asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/signup">Sign up</Link>
-          </Button>
+          {!isUserLoading && user ? (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+               <Avatar className="h-9 w-9">
+                <AvatarImage src={user.photoURL || undefined} />
+                <AvatarFallback>{user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <Button variant="ghost" size="icon" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
+          ) : !isUserLoading && (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/login">Log in</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">Sign up</Link>
+              </Button>
+            </>
+          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
