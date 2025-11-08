@@ -65,6 +65,8 @@ export default function Header() {
         if (targetElement) {
           targetElement.scrollIntoView({ behavior: 'smooth' });
         }
+      } else if (isAnchor && !isHome) {
+        router.push(href);
       }
     };
     
@@ -101,18 +103,12 @@ export default function Header() {
         <div className="flex flex-1 items-center justify-end gap-2">
           {!isUserLoading && user ? (
             <>
-              <Button variant="ghost" asChild>
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-               <Button variant="ghost" asChild>
-                <Link href="/dashboard/user/settings">Settings</Link>
-              </Button>
                <Avatar className="h-9 w-9">
-                <AvatarImage src={user.photoURL || undefined} />
+                <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`} />
                 <AvatarFallback>{user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
-              <Button variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
-                <LogOut className="h-4 w-4" />
+              <Button variant="outline" asChild>
+                <Link href="/dashboard">Dashboard</Link>
               </Button>
             </>
           ) : !isUserLoading && (
@@ -153,10 +149,6 @@ export default function Header() {
                         <SheetClose asChild>
                            <Link href="/dashboard" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Dashboard</Link>
                         </SheetClose>
-                        <SheetClose asChild>
-                           <Link href="/dashboard/user/settings" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Settings</Link>
-                        </SheetClose>
-                        <Button variant="ghost" onClick={handleSignOut} className="text-lg justify-start text-muted-foreground font-medium">Sign Out</Button>
                      </div>
                   ) : !isUserLoading && (
                      <div className="flex flex-col gap-4">
