@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Plane, Menu, MountainSnow, LogOut } from "lucide-react";
+import { Plane, Menu, MountainSnow, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -31,6 +31,7 @@ export default function Header() {
   const { toast } = useToast();
 
   const handleSignOut = async () => {
+    if (!auth) return;
     try {
       await signOut(auth);
       toast({ title: "Signed out successfully." });
@@ -103,11 +104,14 @@ export default function Header() {
               <Button variant="ghost" asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
+               <Button variant="ghost" asChild>
+                <Link href="/dashboard/user/settings">Settings</Link>
+              </Button>
                <Avatar className="h-9 w-9">
                 <AvatarImage src={user.photoURL || undefined} />
                 <AvatarFallback>{user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</AvatarFallback>
               </Avatar>
-              <Button variant="ghost" size="icon" onClick={handleSignOut}>
+              <Button variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
                 <LogOut className="h-4 w-4" />
               </Button>
             </>
@@ -143,6 +147,28 @@ export default function Header() {
                       />
                     </SheetClose>
                   ))}
+                  <div className="border-t pt-4">
+                  {!isUserLoading && user ? (
+                     <div className="flex flex-col gap-4">
+                        <SheetClose asChild>
+                           <Link href="/dashboard" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Dashboard</Link>
+                        </SheetClose>
+                        <SheetClose asChild>
+                           <Link href="/dashboard/user/settings" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Settings</Link>
+                        </SheetClose>
+                        <Button variant="ghost" onClick={handleSignOut} className="text-lg justify-start text-muted-foreground font-medium">Sign Out</Button>
+                     </div>
+                  ) : !isUserLoading && (
+                     <div className="flex flex-col gap-4">
+                       <SheetClose asChild>
+                         <Link href="/login" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Log in</Link>
+                       </SheetClose>
+                        <SheetClose asChild>
+                         <Link href="/signup" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Sign up</Link>
+                       </SheetClose>
+                     </div>
+                  )}
+                  </div>
                 </nav>
               </div>
             </SheetContent>
