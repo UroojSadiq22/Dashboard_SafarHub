@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MountainSnow } from "lucide-react";
 import Link from "next/link";
 
 export default function SignupPage() {
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] bg-background">
+    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] bg-background py-12">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <MountainSnow className="mx-auto h-8 w-8 text-primary mb-2" />
@@ -40,6 +41,29 @@ export default function SignupPage() {
                 Or continue with
               </span>
             </div>
+          </div>
+           <div className="grid gap-2">
+            <Label>I am a...</Label>
+            <RadioGroup defaultValue="traveler" className="grid grid-cols-2 gap-4">
+              <div>
+                <RadioGroupItem value="traveler" id="traveler" className="peer sr-only" />
+                <Label
+                  htmlFor="traveler"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                >
+                  Traveler
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="agent" id="agent" className="peer sr-only" />
+                <Label
+                  htmlFor="agent"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                >
+                  Agent
+                </Label>
+              </div>
+            </RadioGroup>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="name">Name</Label>

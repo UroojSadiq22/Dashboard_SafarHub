@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { href: "/packages", label: "Packages" },
   { href: "/agents", label: "Agents" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#testimonials", label: "Testimonials" },
 ];
 
 export default function Header() {
@@ -29,12 +30,28 @@ export default function Header() {
     href: string;
     label: string;
     className?: string;
-  }) => (
+  }) => {
+    const isHome = pathname === '/';
+    const isAnchor = href.startsWith('/#');
+
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (isAnchor && isHome) {
+        e.preventDefault();
+        const targetId = href.substring(2);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+    
+    return (
     <Link
       href={href}
+      onClick={handleClick}
       className={cn(
         "text-sm font-medium transition-colors hover:text-primary",
-        pathname.startsWith(href)
+        pathname === href
           ? "text-primary"
           : "text-muted-foreground",
         className
@@ -42,7 +59,7 @@ export default function Header() {
     >
       {label}
     </Link>
-  );
+  )};
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -59,6 +76,9 @@ export default function Header() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end gap-2">
+           <Button variant="ghost" asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
           <Button variant="ghost" asChild>
             <Link href="/login">Log in</Link>
           </Button>
