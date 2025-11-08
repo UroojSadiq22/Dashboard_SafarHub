@@ -1,0 +1,362 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the SafarHub application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's full name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The user's phone number."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role within the application (user, agent, or admin).",
+          "format": "enum"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "phone",
+        "role"
+      ]
+    },
+    "Agent": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Agent",
+      "type": "object",
+      "description": "Represents a travel agent registered on the SafarHub platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the agent entity."
+        },
+        "ownerUserId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Agent).  The auth uid of the agent user."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the travel agent."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The agent's phone number."
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "URL of the agent's logo image.",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the travel agent."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Indicates whether the agent has been verified by an admin."
+        },
+        "rating": {
+          "type": "number",
+          "description": "The agent's average rating (updated based on reviews)."
+        },
+        "specialties": {
+          "type": "array",
+          "description": "An array of strings representing the agent's specialties.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "description": "An array of strings representing the locations the agent specializes in.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "ownerUserId",
+        "name",
+        "phone",
+        "logoUrl",
+        "description",
+        "verified",
+        "rating",
+        "specialties",
+        "locations"
+      ]
+    },
+    "Package": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Package",
+      "type": "object",
+      "description": "Represents a travel package offered by a travel agent.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the package entity."
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Package)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the travel package."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the travel package."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the travel package."
+        },
+        "durationDays": {
+          "type": "number",
+          "description": "The duration of the travel package in days."
+        },
+        "itinerary": {
+          "type": "array",
+          "description": "An array of day-wise details of the package itinerary.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "images": {
+          "type": "array",
+          "description": "An array of image URLs for the travel package.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seatsAvailable": {
+          "type": "number",
+          "description": "The number of seats available for the travel package."
+        }
+      },
+      "required": [
+        "id",
+        "agentId",
+        "title",
+        "description",
+        "price",
+        "durationDays",
+        "itinerary",
+        "images",
+        "seatsAvailable"
+      ]
+    },
+    "Booking": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Booking",
+      "type": "object",
+      "description": "Represents a booking made by a user for a travel package.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the booking entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Booking)"
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Booking)"
+        },
+        "packageId": {
+          "type": "string",
+          "description": "Reference to Package. (Relationship: Package 1:N Booking)"
+        },
+        "pax": {
+          "type": "number",
+          "description": "The number of passengers for the booking."
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the booking (inquiry, pending, confirmed, or cancelled).",
+          "format": "enum"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "agentId",
+        "packageId",
+        "pax",
+        "status"
+      ]
+    },
+    "Review": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Review",
+      "type": "object",
+      "description": "Represents a review of a travel agent submitted by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the review entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Review)"
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Review)"
+        },
+        "rating": {
+          "type": "number",
+          "description": "The rating given by the user (e.g., 1-5 stars)."
+        },
+        "comment": {
+          "type": "string",
+          "description": "The user's comment about the travel agent."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the review was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "agentId",
+        "rating",
+        "comment",
+        "createdAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. The userId parameter corresponds to the Firebase Auth UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Auth UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/agents/{agentId}",
+        "definition": {
+          "entityName": "Agent",
+          "schema": {
+            "$ref": "#/backend/entities/Agent"
+          },
+          "description": "Stores travel agent profiles. Each agent document is owned by a user, indicated by the 'ownerUserId' field, which must match the Firebase Auth UID. Includes denormalized 'ownerUserId' for authorization independence.",
+          "params": [
+            {
+              "name": "agentId",
+              "description": "Unique identifier for the travel agent."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/agents/{agentId}/packages/{packageId}",
+        "definition": {
+          "entityName": "Package",
+          "schema": {
+            "$ref": "#/backend/entities/Package"
+          },
+          "description": "Stores travel packages offered by agents.  Located as a subcollection of agents, where the agentId must match the agentId property in the package document.",
+          "params": [
+            {
+              "name": "agentId",
+              "description": "The ID of the agent who owns the package."
+            },
+            {
+              "name": "packageId",
+              "description": "Unique identifier for the travel package."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/bookings/{bookingId}",
+        "definition": {
+          "entityName": "Booking",
+          "schema": {
+            "$ref": "#/backend/entities/Booking"
+          },
+          "description": "Stores bookings made by users for travel packages.  Includes references to the user, agent, and package. Uses top-level collection to simplify querying and listing bookings across all users/agents.",
+          "params": [
+            {
+              "name": "bookingId",
+              "description": "Unique identifier for the booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/reviews/{reviewId}",
+        "definition": {
+          "entityName": "Review",
+          "schema": {
+            "$ref": "#/backend/entities/Review"
+          },
+          "description": "Stores reviews submitted by users for travel agents.  Uses a top-level collection to facilitate listing reviews across all agents.",
+          "params": [
+            {
+              "name": "reviewId",
+              "description": "Unique identifier for the review."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "admin",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Documents in this collection indicate admin privileges for a user. The existence of a document with a userId matching the Firebase Auth UID grants admin access.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Auth UID of the admin user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support a travel marketplace application (SafarHub) focusing on agents, packages, bookings, and reviews. The structure adheres to the principles of Authorization Independence, Clarity of Intent, DBAC (Database-Based Access Control), and QAPs (Rules are Not Filters).\n\n**Authorization Independence:**\nAuthorization independence is achieved by denormalizing authorization-related data. For example, the `packages` subcollection under `/agents/{agentId}` does not rely on `get()` calls to the `agents` document for authorization. Instead, authorization is based on the `ownerUserId` field in the `agents` collection and the user's `uid`.  Furthermore, bookings also store the agentId, which also can be used for authorization purposes.  This removes hierarchical dependencies and enables atomic operations.\n\n**Structural Segregation:**\nThe data is segregated to ensure a homogeneous security posture. User profiles are stored separately from agent profiles and travel packages. This prevents mixing data with different access requirements in the same collection.\n\n**Access Modeling:**\nConsistent patterns for authorization are used:\n*   **Path-Based Ownership:** `/users/{userId}` is used for private user data. `/agents/{agentId}` is used for agent data, owned by the agent with `ownerUserId == userId`.\n*   **Hierarchical Paths:** `/agents/{agentId}/packages/{packageId}` establishes a clear ownership hierarchy:  `Agent 1:N Package`.\n*   **Global Roles (DBAC):**  Admin roles are managed through the existence of a document in the `/roles_admin/{uid}` collection.\n\n**QAPs (Rules are not Filters):**\nThe structure enables secure `list` operations by avoiding the need to filter based on user roles within the rules themselves.  For example, listing all packages for a particular agent is possible using a collection group query, and filtering for specific agent types can be done on the client-side after data is retrieved.\n\nIn addition, I added users/{userId} to enable user data management."
+  }
+}

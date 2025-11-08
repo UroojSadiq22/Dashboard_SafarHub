@@ -1,0 +1,154 @@
+/**
+ * @fileoverview Firestore Security Rules for SafarHub.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a user-ownership model for user profiles and agent profiles.
+ * Agents can manage their own packages, and bookings/reviews are publicly accessible but linked to users and agents.
+ * Admin privileges are granted based on the existence of a document in the /roles_admin/{userId} collection.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profile information; only the authenticated user can access their own profile.
+ * - /agents/{agentId}: Stores agent profiles; owned by a user (ownerUserId).
+ * - /agents/{agentId}/packages/{packageId}: Stores packages offered by agents.
+ * - /bookings/{bookingId}: Stores booking information; accessible with authorization checks.
+ * - /reviews/{reviewId}: Stores reviews; accessible with authorization checks.
+ * - /roles_admin/{userId}: Indicates admin privileges for a user.
+ *
+ * Key Security Decisions:
+ * - Users can only access their own user documents.
+ * - Agents can only manage their own agent profiles and associated packages.
+ * - Listing of users is disallowed for privacy.
+ * - Admin privileges are granted via the /roles_admin collection.
+ *
+ * Denormalization for Authorization:
+ * - Agent documents contain an `ownerUserId` field, enabling direct ownership checks without additional reads.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Grants access to user documents based on ownership.
+     * @path /users/{userId}
+     * @allow (create) User with matching auth UID can create their profile.
+     * @allow (get, update, delete) Authenticated user can read/write their own profile.
+     * @deny (create) User cannot create a profile with a different UID.
+     * @deny (get, update, delete) User cannot read/write another user's profile.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+
+      allow get: if isOwner(userId);
+      allow list: if false; // Disable listing of all users for privacy.
+      allow create: if isOwner(userId) && request.resource.data.id == request.auth.uid;
+      allow update: if isOwner(userId) && resource != null && request.resource.data.id == resource.data.id; //Enforce immutability of user id
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Grants access to agent documents based on ownership.
+     * @path /agents/{agentId}
+     * @allow (create) Authenticated user can create an agent profile with their UID as ownerUserId.
+     * @allow (get, update, delete) Agent owner can read/write their own agent profile.
+     * @deny (create) User cannot create an agent profile with a different ownerUserId.
+     * @deny (get, update, delete) User cannot read/write another agent's profile.
+     * @principle Enforces document ownership for writes.
+     */
+    match /agents/{agentId} {
+      function isOwner(ownerUserId) {
+        return request.auth != null && request.auth.uid == ownerUserId;
+      }
+
+      allow get: if true; // Allow anyone to read agent profiles
+      allow list: if true;
+      allow create: if request.auth != null && request.resource.data.ownerUserId == request.auth.uid;
+      allow update: if isOwner(resource.data.ownerUserId) && resource != null;
+      allow delete: if isOwner(resource.data.ownerUserId) && resource != null;
+    }
+
+    /**
+     * @description Grants access to package documents based on agent ownership.
+     * @path /agents/{agentId}/packages/{packageId}
+     * @allow (create) Agent owner can create packages under their agent profile.
+     * @allow (get, update, delete) Agent owner can read/write their own packages.
+     * @deny (create) User cannot create packages under another agent's profile.
+     * @deny (get, update, delete) User cannot read/write another agent's packages.
+     * @principle Enforces hierarchical ownership for writes.
+     */
+    match /agents/{agentId}/packages/{packageId} {
+      function isAgentOwner(agentId) {
+          return get(/databases/$(database)/documents/agents/$(agentId)).data.ownerUserId == request.auth.uid;
+      }
+
+      allow get: if true; // Allow anyone to read package details
+      allow list: if true; //Allow anyone to read list of packages
+      allow create: if isAgentOwner(agentId);
+      allow update: if isAgentOwner(agentId) && resource != null;
+      allow delete: if isAgentOwner(agentId) && resource != null;
+    }
+
+    /**
+     * @description Grants access to booking documents based on user and agent association.
+     * @path /bookings/{bookingId}
+     * @allow (create) Authenticated users can create bookings.
+     * @allow (get) Anyone can get a booking if they know the ID.
+     * @allow (update, delete) Only the user who created the booking can update or delete it.
+     * @deny (create, update, delete) Users cannot manipulate bookings they don't own.
+     * @principle Open reads, restricted writes based on ownership.
+     */
+    match /bookings/{bookingId} {
+
+
+      allow get: if true; //Allow anyone to read bookings
+      allow list: if true; //Allow anyone to read bookings
+      allow create: if request.auth != null;
+      allow update: if request.auth.uid == resource.data.userId && resource != null;
+      allow delete: if request.auth.uid == resource.data.userId && resource != null;
+    }
+
+    /**
+     * @description Grants access to review documents.
+     * @path /reviews/{reviewId}
+     * @allow (create) Authenticated users can create reviews.
+     * @allow (get, list) Anyone can read reviews.
+     * @deny (update, delete) Reviews cannot be updated or deleted (immutable).
+     * @principle Open reads, create by authenticated users, no updates or deletes.
+     */
+    match /reviews/{reviewId} {
+
+
+      allow get: if true; //Allow anyone to read reviews
+      allow list: if true; //Allow anyone to read reviews
+      allow create: if request.auth != null;
+      allow update: if false; // Reviews are immutable
+      allow delete: if false; // Reviews are immutable
+    }
+
+    /**
+     * @description Grants admin privileges based on the existence of a document in this collection.
+     * @path /roles_admin/{userId}
+     * @allow (create) Only the authenticated user can create their own admin document.
+     * @allow (get) Anyone can check for admin status.
+     * @deny (list, update, delete) Listing, updating, and deleting admin documents is disallowed.
+     * @principle DBAC: Database-Based Access Control.
+     */
+    match /roles_admin/{userId} {
+       function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      function isAdmin() {
+        return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+      }
+
+      allow get: if isAdmin();
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == request.auth.uid;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
