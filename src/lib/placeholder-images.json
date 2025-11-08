@@ -1,3 +1,100 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Cinematic view of mountains at sunset",
+      "imageUrl": "https://images.unsplash.com/photo-1500964757637-c85e8a162699?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb3VudGFpbnMlMjBzdW5zZXR8ZW58MHx8fHwxNzYyNTcwNzI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mountains sunset"
+    },
+    {
+      "id": "agent-logo-1",
+      "description": "Logo for Wanderlust Travels",
+      "imageUrl": "https://images.unsplash.com/photo-1762171696586-e03dabfa81cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsb2dvJTIwdHJhdmVsfGVufDB8fHx8MTc2MjU4NTg4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo travel"
+    },
+    {
+      "id": "agent-logo-2",
+      "description": "Logo for Mountain Peaks Agency",
+      "imageUrl": "https://images.unsplash.com/photo-1592093947163-51f1d258d110?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsb2dvJTIwbW91bnRhaW58ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo mountain"
+    },
+    {
+      "id": "agent-logo-3",
+      "description": "Logo for City Explorers Inc.",
+      "imageUrl": "https://images.unsplash.com/photo-1631359994852-37e5b9009ef3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bG9nbyUyMGNpdHl8ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo city"
+    },
+    {
+      "id": "agent-logo-4",
+      "description": "Logo for Safari Adventures",
+      "imageUrl": "https://images.unsplash.com/photo-1662552861913-877cc6b9c49c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsb2dvJTIwc2FmYXJpfGVufDB8fHx8MTc2MjU5NTI1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo safari"
+    },
+    {
+      "id": "package-1a",
+      "description": "Overwater bungalows in the Maldives",
+      "imageUrl": "https://images.unsplash.com/photo-1692417045879-8ec84e750bb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxkaXZlcyUyMGJ1bmdhbG93c3xlbnwwfHx8fDE3NjI1OTUyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "maldives bungalows"
+    },
+    {
+      "id": "package-1b",
+      "description": "Clear turquoise water with coral reef",
+      "imageUrl": "https://images.unsplash.com/photo-1642518382976-7c36c035124c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8b2NlYW4lMjByZWVmfGVufDB8fHx8MTc2MjU0NTExM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ocean reef"
+    },
+    {
+      "id": "package-1c",
+      "description": "Couple on a sunset cruise",
+      "imageUrl": "https://images.unsplash.com/photo-1591969852023-190295e484bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y291cGxlJTIwc3Vuc2V0fGVufDB8fHx8MTc2MjUyOTM2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple sunset"
+    },
+    {
+      "id": "package-2a",
+      "description": "View of Mount Everest from a trail",
+      "imageUrl": "https://images.unsplash.com/photo-1594725224909-0e66d59ed0f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb3VudCUyMGV2ZXJlc3R8ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mount everest"
+    },
+    {
+      "id": "package-2b",
+      "description": "Trekkers crossing a suspension bridge in Nepal",
+      "imageUrl": "https://images.unsplash.com/photo-1684993863198-b559b3cc6013?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXBhbCUyMGJyaWRnZXxlbnwwfHx8fDE3NjI1OTUyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nepal bridge"
+    },
+    {
+      "id": "package-2c",
+      "description": "A sherpa village in the Himalayas",
+      "imageUrl": "https://images.unsplash.com/photo-1671327744316-e6393cb03ad8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoaW1hbGF5YXMlMjB2aWxsYWdlfGVufDB8fHx8MTc2MjU5NTI1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "himalayas village"
+    },
+    {
+      "id": "package-3a",
+      "description": "The Colosseum in Rome",
+      "imageUrl": "https://images.unsplash.com/photo-1659003732403-fef512570038?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyb21lJTIwY29sb3NzZXVtfGVufDB8fHx8MTc2MjUxMTEzNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rome colosseum"
+    },
+    {
+      "id": "package-3b",
+      "description": "Inside St. Peter's Basilica",
+      "imageUrl": "https://images.unsplash.com/photo-1686906492122-41296692a7b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx2YXRpY2FuJTIwYmFzaWxpY2F8ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "vatican basilica"
+    },
+    {
+      "id": "package-3c",
+      "description": "The Trevi Fountain",
+      "imageUrl": "https://images.unsplash.com/photo-1670668532701-b1c3e8b3f16e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyb21lJTIwZm91bnRhaW58ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rome fountain"
+    },
+    {
+      "id": "package-4a",
+      "description": "Ziplining through a rainforest canopy",
+      "imageUrl": "https://images.unsplash.com/photo-1590119417655-a9fa0491bd7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmFpbmZvcmVzdCUyMHppcGxpbmV8ZW58MHx8fHwxNzYyNTk1MjUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rainforest zipline"
+    },
+    {
+      "id": "package-4b",
+      "description": "A stunning waterfall in Costa Rica",
+      "imageUrl": "https://images.unsplash.com/photo-1641225191051-935bf55b3f08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29zdGElMjByaWNhJTIwd2F0ZXJmYWxsfGVufDB8fHx8MTc2MjU5NTI1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "costa rica waterfall"
+    }
+  ]
 }
