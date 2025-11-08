@@ -25,10 +25,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
-import { useMemo } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -38,15 +37,15 @@ export default function DashboardLayout({
   const { user } = useUser();
   const firestore = useFirestore();
 
-  const userDocRef = useMemo(
-    () => (user ? doc(firestore, 'users', user.uid) : null),
+  const userDocRef = useMemoFirebase(
+    () => (user && firestore ? doc(firestore, 'users', user.uid) : null),
     [user, firestore]
   );
   const { data: userData } = useDoc(userDocRef);
   const role = userData?.role;
 
-  const adminDocRef = useMemo(
-    () => (user ? doc(firestore, 'roles_admin', user.uid) : null),
+  const adminDocRef = useMemoFirebase(
+    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
     [user, firestore]
   );
   const { data: adminData } = useDoc(adminDocRef);

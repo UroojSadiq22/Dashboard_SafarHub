@@ -2,17 +2,31 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDoc } from '@/firebase/firestore/use-doc';
 
 export default function DashboardRedirectPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
 
+  const userDocRef = useMemoFirebase(
+    () => (user && firestore ? doc(firestore, 'users', user.uid) : null),
+    [user, firestore]
+  );
+  const { data: userData, isLoading: isUserDocLoading } = useDoc(userDocRef);
+
+  const adminDocRef = useMemoFirebase(
+    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
+    [user, firestore]
+  );
+  const { data: adminData, isLoading: isAdminDocLoading } = useDoc(adminDocRef);
+
   useEffect(() => {
-    if (isUserLoading || !firestore) {
+    const isLoading = isUserLoading || isUserDocLoading || isAdminDocLoading;
+    if (isLoading) {
       return;
     }
 
@@ -21,40 +35,14 @@ export default function DashboardRedirectPage() {
       return;
     }
 
-    const fetchUserRole = async () => {
-      try {
-        const userDocRef = doc(firestore, 'users', user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          const role = userData.role;
-
-          // Check for admin role first
-          const adminDocRef = doc(firestore, 'roles_admin', user.uid);
-          const adminDoc = await getDoc(adminDocRef);
-
-          if (adminDoc.exists()) {
-            router.replace('/dashboard/admin');
-          } else if (role === 'agent') {
-            router.replace('/dashboard/agent');
-          } else {
-            router.replace('/dashboard/user');
-          }
-        } else {
-          // If user doc doesn't exist, maybe they signed up with Google
-          // without completing a role selection. Default to user dashboard.
-          console.warn("User document not found in Firestore. Defaulting to user dashboard.");
-          router.replace('/dashboard/user');
-        }
-      } catch (error) {
-        console.error("Error fetching user role, redirecting to default:", error);
-        router.replace('/dashboard/user');
-      }
-    };
-
-    fetchUserRole();
-  }, [user, isUserLoading, firestore, router]);
+    if (adminData) {
+      router.replace('/dashboard/admin');
+    } else if (userData?.role === 'agent') {
+      router.replace('/dashboard/agent');
+    } else {
+      router.replace('/dashboard/user');
+    }
+  }, [user, userData, adminData, isUserLoading, isUserDocLoading, isAdminDocLoading, router]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center p-8">
