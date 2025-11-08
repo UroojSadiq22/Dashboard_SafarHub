@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useFormStatus } from "react";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,7 +42,7 @@ function SubmitButton() {
 }
 
 export function BookingForm({ pkg }: BookingFormProps) {
-  const [state, formAction] = useFormState(submitInquiry, initialState);
+  const [state, formAction] = useActionState(submitInquiry, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
