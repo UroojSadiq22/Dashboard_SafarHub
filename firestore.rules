@@ -132,7 +132,7 @@ service cloud.firestore {
      * @description Grants admin privileges based on the existence of a document in this collection.
      * @path /roles_admin/{userId}
      * @allow (create) Only the authenticated user can create their own admin document.
-     * @allow (get) Anyone can check for admin status.
+     * @allow (get) Anyone can check for admin status of their own user.
      * @deny (list, update, delete) Listing, updating, and deleting admin documents is disallowed.
      * @principle DBAC: Database-Based Access Control.
      */
@@ -144,7 +144,7 @@ service cloud.firestore {
         return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
       }
 
-      allow get: if isAdmin();
+      allow get: if isOwner(userId);
       allow list: if false;
       allow create: if isOwner(userId) && request.resource.data.id == request.auth.uid;
       allow update: if false;
