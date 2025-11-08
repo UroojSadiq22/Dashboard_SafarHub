@@ -14,18 +14,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MountainSnow } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/firebase";
+import { useAuth, useFirestore } from "@/firebase";
 import { 
   signInWithEmailAndPassword, 
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 
 export default function LoginPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -33,6 +35,7 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+     if (!auth) return;
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: "Login Successful" });
@@ -47,9 +50,26 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth || !firestore) return;
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Check if user exists in Firestore, if not, create them
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          role: 'user', // Default role for Google sign-in
+          phone: user.phoneNumber || ''
+        });
+      }
+
       toast({ title: "Google Sign-In Successful" });
       router.push("/dashboard");
     } catch (error: any) {

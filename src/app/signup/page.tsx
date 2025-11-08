@@ -22,7 +22,7 @@ import {
   signInWithPopup,
   updateProfile
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -35,10 +35,18 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"traveler" | "agent">("traveler");
+  const [role, setRole] = useState<"user" | "agent">("user");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!auth || !firestore) {
+       toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: "Firebase not initialized.",
+      });
+      return;
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -65,18 +73,25 @@ export default function SignupPage() {
   };
 
   const handleGoogleSignIn = async () => {
+     if (!auth || !firestore) return;
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      await setDoc(doc(firestore, "users", user.uid), {
-        uid: user.uid,
-        name: user.displayName,
-        email: user.email,
-        role: role, // Role selection should be handled post-google sign-up if needed
-        phone: user.phoneNumber || ""
-      }, { merge: true }); // Merge to not overwrite existing user data if they sign up via different methods
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      // Create user document only if it doesn't exist
+      if (!userDoc.exists()) {
+         await setDoc(userDocRef, {
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          role: role, // Default to 'user' for Google sign-in for now
+          phone: user.phoneNumber || ""
+        }, { merge: true });
+      }
       
       toast({ title: "Google Sign-In Successful" });
       router.push("/dashboard");
@@ -122,15 +137,15 @@ export default function SignupPage() {
             <div className="grid gap-2">
               <Label>I am a...</Label>
               <RadioGroup 
-                defaultValue="traveler" 
+                defaultValue="user" 
                 className="grid grid-cols-2 gap-4"
                 value={role}
-                onValueChange={(value) => setRole(value as "traveler" | "agent")}
+                onValueChange={(value) => setRole(value as "user" | "agent")}
               >
                 <div>
-                  <RadioGroupItem value="traveler" id="traveler" className="peer sr-only" />
+                  <RadioGroupItem value="user" id="user" className="peer sr-only" />
                   <Label
-                    htmlFor="traveler"
+                    htmlFor="user"
                     className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                   >
                     Traveler
