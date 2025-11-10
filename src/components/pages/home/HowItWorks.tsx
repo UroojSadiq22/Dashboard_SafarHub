@@ -3,24 +3,32 @@ import { Search, UserCheck, Briefcase, Plane } from "lucide-react";
 
 const steps = [
   {
-    icon: <Search className="w-10 h-10 text-primary" />,
+    icon: <Search className="w-10 h-10 text-chart-1" />,
     title: "Find Your Agent or Package",
     description: "Use our powerful search to discover vetted travel agents or browse through unique, ready-to-book travel packages for every style.",
+    color: "text-chart-1",
+    bg: "bg-chart-1/10"
   },
   {
-    icon: <UserCheck className="w-10 h-10 text-primary" />,
+    icon: <UserCheck className="w-10 h-10 text-chart-2" />,
     title: "Connect & Plan",
     description: "Connect directly with agents to plan a custom trip or inquire about a package. Get expert advice to tailor your perfect itinerary.",
+    color: "text-chart-2",
+    bg: "bg-chart-2/10"
   },
   {
-    icon: <Briefcase className="w-10 h-10 text-primary" />,
+    icon: <Briefcase className="w-10 h-10 text-chart-3" />,
     title: "Book with Confidence",
     description: "Finalize your travel plans and book securely through our platform. All our agents are verified for your peace of mind.",
+    color: "text-chart-3",
+    bg: "bg-chart-3/10"
   },
   {
-    icon: <Plane className="w-10 h-10 text-primary" />,
+    icon: <Plane className="w-10 h-10 text-chart-4" />,
     title: "Enjoy Your Adventure",
     description: "Travel stress-free knowing every detail has been handled by a professional. Your dream vacation is just a few clicks away!",
+    color: "text-chart-4",
+    bg: "bg-chart-4/10"
   },
 ]
 
@@ -36,14 +44,14 @@ export default function HowItWorks() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
-            <Card key={index} className="text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+            <Card key={index} className="text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group">
               <CardHeader>
-                <div className="mx-auto bg-primary/10 rounded-full h-20 w-20 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                <div className={`mx-auto rounded-full h-20 w-20 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 ${step.bg}`}>
                   {step.icon}
                 </div>
               </CardHeader>
               <CardContent>
-                <CardTitle className="font-headline text-xl mb-2">{step.title}</CardTitle>
+                <CardTitle className={`font-headline text-xl mb-2 transition-colors group-hover:${step.color}`}>{step.title}</CardTitle>
                 <p className="text-muted-foreground text-sm font-body">{step.description}</p>
               </CardContent>
             </Card>
