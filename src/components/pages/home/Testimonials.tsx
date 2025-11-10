@@ -84,7 +84,7 @@ export default function Testimonials() {
 
 const Card = ({ review }: { review: typeof testimonials[0] }) => {
     return (
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20 animate-glow">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20">
             <div>
                 <div className="flex items-center mb-4">
                     <Avatar className="h-14 w-14 mr-4 border-2 border-accent">
