@@ -68,3 +68,15 @@ body {
      background-image: linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--secondary)));
   }
 }
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1.1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+.animate-kenburns {
+  animation: kenburns 8s ease-out forwards;
+}
