@@ -44,6 +44,9 @@ export default function Hero() {
     <section className="relative h-[70vh] md:h-[85vh] flex items-center justify-center text-white overflow-hidden">
       <Carousel
         plugins={[plugin.current]}
+        opts={{
+          loop: true,
+        }}
         className="absolute inset-0 w-full h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.reset}
