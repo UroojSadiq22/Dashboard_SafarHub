@@ -11,25 +11,25 @@ interface PackageCardProps {
 
 export default function PackageCard({ pkg }: PackageCardProps) {
   return (
-    <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg">
+    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
       <CardHeader className="p-0">
-        <Link href={`/packages/${pkg.id}`} className="block aspect-[4/3] w-full relative">
+        <Link href={`/packages/${pkg.id}`} className="block aspect-[4/3] w-full relative overflow-hidden">
           <Image
             src={pkg.images[0]}
             alt={pkg.title}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
             data-ai-hint="package image"
           />
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex-1">
         <Link href={`/packages/${pkg.id}`}>
-          <CardTitle className="text-lg font-bold leading-tight mb-2 hover:text-primary transition-colors">
+          <CardTitle className="font-headline text-xl font-bold leading-tight mb-2 hover:text-primary transition-colors">
             {pkg.title}
           </CardTitle>
         </Link>
-        <div className="flex items-center text-sm text-muted-foreground gap-4">
+        <div className="flex items-center text-sm text-muted-foreground gap-4 mt-2 font-body">
           <div className="flex items-center gap-1.5">
             <DollarSign className="w-4 h-4 text-accent" />
             <span className="font-semibold">{pkg.price.toLocaleString()}</span>
@@ -41,7 +41,7 @@ export default function PackageCard({ pkg }: PackageCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button asChild className="w-full">
+        <Button asChild className="w-full font-headline">
           <Link href={`/packages/${pkg.id}`}>
             View Details <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

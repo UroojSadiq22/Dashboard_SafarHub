@@ -11,19 +11,19 @@ interface AgentCardProps {
 
 export default function AgentCard({ agent }: AgentCardProps) {
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-lg">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
       <CardHeader className="flex flex-row items-start gap-4 p-4">
         <Image
           src={agent.logoUrl}
           alt={`${agent.name} logo`}
           width={64}
           height={64}
-          className="rounded-full border"
+          className="rounded-full border-2 border-accent"
           data-ai-hint="agent logo"
         />
         <div className="flex-1">
           <Link href={`/agents/${agent.id}`}>
-            <CardTitle className="text-lg font-bold hover:text-primary transition-colors flex items-center gap-2">
+            <CardTitle className="font-headline text-lg font-bold hover:text-primary transition-colors flex items-center gap-2">
               {agent.name}
               {agent.verified && <ShieldCheck className="h-5 w-5 text-primary" />}
             </CardTitle>
@@ -35,10 +35,10 @@ export default function AgentCard({ agent }: AgentCardProps) {
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        <CardDescription className="line-clamp-2 h-10">{agent.description}</CardDescription>
+        <CardDescription className="line-clamp-2 h-10 font-body">{agent.description}</CardDescription>
         <div className="mt-4 flex flex-wrap gap-2">
           {agent.specialties.slice(0, 3).map((specialty) => (
-            <Badge key={specialty} variant="secondary">
+            <Badge key={specialty} variant="secondary" className="font-body">
               {specialty}
             </Badge>
           ))}

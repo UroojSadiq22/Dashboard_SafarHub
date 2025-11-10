@@ -8,6 +8,19 @@ import Footer from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import { usePathname } from 'next/navigation';
+import { Inter, Oswald } from 'next/font/google';
+import { cn } from '@/lib/utils';
+
+
+const fontInter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const fontOswald = Oswald({
+  subsets: ['latin'],
+  variable: '--font-oswald',
+});
 
 // export const metadata: Metadata = {
 //   title: 'SafarHub - All-in-One Travel Agent Marketplace',
@@ -27,11 +40,8 @@ export default function RootLayout({
       <head>
         <title>SafarHub - All-in-One Travel Agent Marketplace</title>
         <meta name="description" content="Compare travel agents, view packages, read reviews, and book your next adventure." />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased min-h-screen flex flex-col">
+      <body className={cn("min-h-screen bg-background font-body antialiased flex flex-col", fontInter.variable, fontOswald.variable)}>
         <FirebaseClientProvider>
           {!isDashboard && <Header />}
           <main className="flex-1">{children}</main>
