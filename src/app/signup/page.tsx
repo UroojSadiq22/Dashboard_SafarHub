@@ -159,7 +159,7 @@ export default function SignupPage() {
                     <div className="grid gap-2">
                     <Label>I am a...</Label>
                     <RadioGroup 
-                        defaultValue="user" g
+                        defaultValue="user"
                         className="grid grid-cols-2 gap-4"
                         value={role}
                         onValueChange={(value) => setRole(value as "user" | "agent")}
@@ -237,12 +237,12 @@ export default function SignupPage() {
        </div>
         <div className="hidden bg-muted lg:block relative">
             <Image
-                src="https://picsum.photos/seed/auth-bg/1200/1800"
+                src="https://picsum.photos/seed/signup-page/1200/1800"
                 alt="Image"
                 layout="fill"
                 objectFit="cover"
                 className="brightness-50"
-                data-ai-hint="travel background"
+                data-ai-hint="mountain landscape"
             />
         </div>
      </div>

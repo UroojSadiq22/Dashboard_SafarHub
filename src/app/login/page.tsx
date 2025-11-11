@@ -174,12 +174,12 @@ export default function LoginPage() {
         </div>
         <div className="hidden bg-muted lg:block relative">
             <Image
-                src="https://picsum.photos/seed/auth-bg/1200/1800"
+                src="https://picsum.photos/seed/login-page/1200/1800"
                 alt="Image"
                 layout="fill"
                 objectFit="cover"
                 className="brightness-50"
-                data-ai-hint="travel background"
+                data-ai-hint="exotic beach"
             />
         </div>
     </div>
