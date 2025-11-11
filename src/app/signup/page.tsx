@@ -25,6 +25,7 @@ import {
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 
 export default function SignupPage() {
   const auth = useAuth();
@@ -36,6 +37,8 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"user" | "agent">("user");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +50,7 @@ export default function SignupPage() {
       });
       return;
     }
+    setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -69,11 +73,14 @@ export default function SignupPage() {
         title: "Signup Failed",
         description: error.message,
       });
+    } finally {
+        setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
      if (!auth || !firestore) return;
+    setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
@@ -82,13 +89,12 @@ export default function SignupPage() {
       const userDocRef = doc(firestore, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
-      // Create user document only if it doesn't exist
       if (!userDoc.exists()) {
          await setDoc(userDocRef, {
           uid: user.uid,
           name: user.displayName,
           email: user.email,
-          role: role, // Default to 'user' for Google sign-in for now
+          role: 'user', 
           phone: user.phoneNumber || ""
         }, { merge: true });
       }
@@ -101,35 +107,48 @@ export default function SignupPage() {
         title: "Google Sign-In Failed",
         description: error.message,
       });
+    } finally {
+        setIsGoogleLoading(false);
     }
   };
 
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] bg-background py-12">
-      <Card className="w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] bg-background p-4">
+       <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+      <Card className="w-full max-w-sm shadow-2xl">
         <CardHeader className="text-center">
-          <MountainSnow className="mx-auto h-8 w-8 text-primary mb-2" />
-          <CardTitle>Create an Account</CardTitle>
+          <MountainSnow className="mx-auto h-10 w-10 text-primary mb-4" />
+          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
           <CardDescription>Join SafarHub to start your next adventure</CardDescription>
         </CardHeader>
         <form onSubmit={handleSignUp}>
           <CardContent className="grid gap-4">
-            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn}>
+             <Button 
+              variant="outline" 
+              className="w-full" 
+              type="button" 
+              onClick={handleGoogleSignIn}
+              disabled={isLoading || isGoogleLoading}
+              >
                <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
                 <path
                   fill="currentColor"
                   d="M12.48 10.92v3.28h7.84c-.24 1.84-.85 3.18-1.73 4.1-1.05 1.05-2.36 1.62-3.82 1.62-3.32 0-6.03-2.75-6.03-6.12s2.7-6.12 6.03-6.12c1.87 0 3.13.78 4.08 1.68l2.5-2.5C18.43 2.1 15.72 1 12.48 1 7.03 1 3 5.03 3 10.5s4.03 9.5 9.48 9.5c2.83 0 5.1-1 6.8-2.65 1.8-1.7 2.6-4.2 2.6-6.8V10.92h-7.84z"
                 />
               </svg>
-              Sign up with Google
+              {isGoogleLoading ? "Signing up..." : "Sign up with Google"}
             </Button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
+                <span className="bg-card px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
@@ -141,6 +160,7 @@ export default function SignupPage() {
                 className="grid grid-cols-2 gap-4"
                 value={role}
                 onValueChange={(value) => setRole(value as "user" | "agent")}
+                disabled={isLoading || isGoogleLoading}
               >
                 <div>
                   <RadioGroupItem value="user" id="user" className="peer sr-only" />
@@ -170,6 +190,7 @@ export default function SignupPage() {
                 required 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -181,6 +202,7 @@ export default function SignupPage() {
                 required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -191,20 +213,24 @@ export default function SignupPage() {
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading || isGoogleLoading}
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full" type="submit">Create account</Button>
+            <Button className="w-full" type="submit" disabled={isLoading || isGoogleLoading}>
+                {isLoading ? "Creating Account..." : "Create account"}
+            </Button>
             <div className="text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline font-semibold">
                 Log in
               </Link>
             </div>
           </CardFooter>
         </form>
       </Card>
+      </motion.div>
     </div>
   );
 }
