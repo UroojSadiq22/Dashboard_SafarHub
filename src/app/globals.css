@@ -3,59 +3,60 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* Lighter Gray-Blue */
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 250 69% 61%; /* Vivid Violet */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 34 92% 59%; /* Energetic Orange */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 250 69% 61%;
-    --radius: 0.75rem;
-
-    --chart-1: 250 69% 61%;
-    --chart-2: 34 92% 59%;
-    --chart-3: 160 70% 45%;
-    --chart-4: 280 70% 55%;
-    --chart-5: 50 80% 55%;
-  }
-
-  .dark {
-    --background: 222 47% 11%;
+    --background: 222 47% 11%; /* Dark Slate Blue */
     --foreground: 210 40% 98%;
-    --card: 222 47% 15%;
+    --card: 224 42% 16%; /* Darker card background */
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
-    --primary: 250 69% 61%;
+    --primary: 173 80% 40%; /* Teal */
     --primary-foreground: 210 40% 98%;
     --secondary: 217 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 34 92% 59%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 93% 47%; /* Gold */
+    --accent-foreground: 222 47% 11%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217 32.6% 17.5%;
     --input: 217 32.6% 17.5%;
-    --ring: 250 69% 61%;
+    --ring: 173 80% 40%;
+    --radius: 0.75rem;
+
+    --chart-1: 173 80% 40%; /* Teal */
+    --chart-2: 45 93% 47%; /* Gold */
+    --chart-3: 250 69% 61%;
+    --chart-4: 280 70% 55%;
+    --chart-5: 50 80% 55%;
+  }
+
+  .dark {
+    /* Keep dark theme consistent with root for now */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 224 42% 16%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 173 80% 40%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 45 93% 47%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32.6% 17.5%;
+    --input: 217 32.6% 17.5%;
+    --ring: 173 80% 40%;
   }
 }
 
@@ -65,6 +66,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-     background-image: linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--secondary)));
+     background: linear-gradient(to bottom right, hsl(var(--background)), hsl(222 47% 15%));
   }
 }

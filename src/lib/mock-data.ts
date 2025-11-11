@@ -1,5 +1,62 @@
+import { Briefcase, CheckCircle, PieChart, Star } from "lucide-react";
 import type { Agent, Package, Review } from "@/lib/types";
 
+// For User Dashboard
+export const mockDashboardStats = [
+  { title: "Total Bookings", value: 12, icon: Briefcase },
+  { title: "Upcoming Trips", value: 3, icon: CheckCircle },
+  { title: "Completed Trips", value: 9, icon: PieChart },
+  { title: "Total Reviews", value: 27, icon: Star },
+];
+
+export const mockBarData = [
+    { month: "Jan", bookings: 12 },
+    { month: "Feb", bookings: 19 },
+    { month: "Mar", bookings: 3 },
+    { month: "Apr", bookings: 5 },
+    { month: "May", bookings: 2 },
+    { month: "Jun", bookings: 3 },
+    { month: "Jul", bookings: 7 },
+    { month: "Aug", bookings: 4 },
+    { month: "Sep", bookings: 10 },
+    { month: "Oct", bookings: 15 },
+    { month: "Nov", bookings: 8 },
+    { month: "Dec", bookings: 11 },
+];
+
+export const mockLineData = [
+  { month: "Jan", growth: 100 },
+  { month: "Feb", growth: 120 },
+  { month: "Mar", growth: 110 },
+  { month: "Apr", growth: 150 },
+  { month: "May", growth: 180 },
+  { month: "Jun", growth: 210 },
+];
+
+export const mockBookings = [
+    { id: "B001", destination: "Dubai", agent: "TravelX Agency", date: "2025-02-12", status: "Confirmed", price: "$1,200" },
+    { id: "B002", destination: "Maldives", agent: "Wanderlust Travels", date: "2025-03-20", status: "Confirmed", price: "$3,500" },
+    { id: "B003", destination: "Kyoto", agent: "City Explorers Inc.", date: "2024-11-05", status: "Completed", price: "$2,800" },
+    { id: "B004", destination: "Nepal", agent: "Mountain Peaks", date: "2024-10-15", status: "Completed", price: "$2,200" },
+    { id: "B005", destination: "Kenya", agent: "Safari Adventures", date: "2025-04-01", status: "Pending", price: "$4,100" },
+];
+
+export const mockUserProfile = {
+    name: "Ayesha Khan",
+    email: "ayesha@example.com",
+    phone: "+92 300 1234567",
+    role: "User",
+    joined: "Jan 10, 2025"
+};
+
+export const mockUserReviews = [
+  { id: "R001", destination: "Maldives", agentName: "Wanderlust Travels", rating: 5, comment: "Absolutely breathtaking! The agent was fantastic." },
+  { id: "R002", destination: "Kyoto", agentName: "City Explorers Inc.", rating: 4, comment: "Great cultural tour, but the hotel was a bit far from the center." },
+  { id: "R003", destination: "Nepal", agentName: "Mountain Peaks", rating: 5, comment: "A life-changing trek. The guides were experts." },
+];
+
+
+// Existing mock data
 export const mockAgents: Agent[] = [
   {
     id: "agent-1",
@@ -87,10 +144,10 @@ export const mockPackages: Package[] = [
     itinerary: [
       { day: 1, title: "Arrival in Kathmandu", description: "Acclimatize and prepare for the trek." },
       { day: 2, title: "Flight to Lukla & Trek to Phakding", description: "Begin your Himalayan adventure." },
-      { day: 3-5, title: "Trek to Namche Bazaar", description: "Acclimatization days and stunning views of Everest." },
-      { day: 6-9, title: "Journey to Gorak Shep", description: "Trekking through beautiful Sherpa villages." },
+      { day: 3, title: "Trek to Namche Bazaar", description: "Acclimatization days and stunning views of Everest." },
+      { day: 6, title: "Journey to Gorak Shep", description: "Trekking through beautiful Sherpa villages." },
       { day: 10, title: "Everest Base Camp", description: "Reach your goal and soak in the majestic atmosphere." },
-      { day: 11-13, title: "Descent to Lukla", description: "Retrace your steps with a sense of accomplishment." },
+      { day: 11, title: "Descent to Lukla", description: "Retrace your steps with a sense of accomplishment." },
       { day: 14, title: "Flight to Kathmandu & Departure", description: "End of your epic journey." },
     ],
     images: [

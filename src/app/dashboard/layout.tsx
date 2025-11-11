@@ -32,13 +32,22 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { useDoc } from '@/firebase/firestore/use-doc';
+import { useUser, useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { signOut } from 'firebase/auth';
+import { motion } from 'framer-motion';
+
+// MOCK DATA
+const mockUser = {
+  name: "Ayesha Khan",
+  email: "ayesha@example.com",
+  role: "user",
+  photoURL: "https://picsum.photos/seed/user-ayesha/40/40"
+};
+const isAdmin = false;
+const role = mockUser.role;
 
 export default function DashboardLayout({
   children,
@@ -46,30 +55,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isUserLoading } = useUser();
-  const firestore = useFirestore();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
-
-  const userDocRef = useMemoFirebase(
-    () => (user && firestore ? doc(firestore, 'users', user.uid) : null),
-    [user, firestore]
-  );
-  const { data: userData } = useDoc(userDocRef);
-  const role = userData?.role;
-
-  const adminDocRef = useMemoFirebase(
-    () => (user && firestore ? doc(firestore, 'roles_admin', user.uid) : null),
-    [user, firestore]
-  );
-  const { data: adminData } = useDoc(adminDocRef);
-  const isAdmin = !!adminData;
 
   const handleSignOut = async () => {
     if (!auth) return;
     try {
       await signOut(auth);
-      toast({ title: "Signed out successfully." });
+      toast({ title: "Logged out successfully!" });
       router.push("/login");
     } catch (error: any) {
       toast({
@@ -79,6 +73,8 @@ export default function DashboardLayout({
       });
     }
   };
+
+  const displayName = user?.displayName || user?.email?.split('@')[0] || "Explorer";
 
   return (
     <SidebarProvider>
@@ -171,7 +167,7 @@ export default function DashboardLayout({
               <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Dashboard">
-                        <Link href="/dashboard/user">
+                        <Link href="/dashboard">
                             <LayoutDashboard />
                             <span>Dashboard</span>
                         </Link>
@@ -194,30 +190,16 @@ export default function DashboardLayout({
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Wishlist">
-                        <Link href="/dashboard/user/wishlist">
-                        <Heart />
-                        <span>Wishlist</span>
+                    <SidebarMenuButton asChild tooltip="Profile">
+                        <Link href="/dashboard/user/settings">
+                        <Settings />
+                        <span>Profile</span>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroup>
           )}
-
-          <SidebarGroup>
-             <SidebarGroupLabel>General</SidebarGroupLabel>
-             <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Account Settings">
-                    <Link href="/dashboard/user/settings">
-                      <Settings />
-                      <span>Settings</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-             </SidebarMenu>
-          </SidebarGroup>
 
         </SidebarContent>
         <SidebarFooter>
@@ -226,10 +208,10 @@ export default function DashboardLayout({
                     <div className="flex items-center gap-2 mb-4">
                         <Avatar>
                             <AvatarImage src={user.photoURL ?? `https://picsum.photos/seed/${user.uid}/40/40`} />
-                            <AvatarFallback>{user.displayName?.[0] ?? user.email?.[0]}</AvatarFallback>
+                            <AvatarFallback>{displayName[0]}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col overflow-hidden">
-                            <span className="text-sm font-semibold truncate">{user.displayName ?? 'User'}</span>
+                            <span className="text-sm font-semibold truncate">{displayName}</span>
                             <span className="text-xs text-muted-foreground truncate">{user.email}</span>
                         </div>
                     </div>
@@ -243,7 +225,14 @@ export default function DashboardLayout({
       </Sidebar>
       <SidebarInset>
          <div className='p-4 md:p-8'>
-            <h1 className='text-3xl font-bold mb-8'>Welcome back, {user?.displayName ?? 'Explorer'} 👋</h1>
+             <motion.h1 
+                className='text-3xl font-bold mb-8'
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Welcome back, {displayName} 👋
+            </motion.h1>
             {children}
         </div>
       </SidebarInset>
