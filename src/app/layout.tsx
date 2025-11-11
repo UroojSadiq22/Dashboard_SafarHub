@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDashboard = pathname.startsWith('/dashboard');
+  const hideHeaderFooter = pathname.startsWith('/dashboard') || pathname === '/login' || pathname === '/signup';
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -43,9 +43,9 @@ export default function RootLayout({
       </head>
       <body className={cn("min-h-screen bg-background font-body antialiased flex flex-col", fontInter.variable, fontOswald.variable)}>
         <FirebaseClientProvider>
-          {!isDashboard && <Header />}
+          {!hideHeaderFooter && <Header />}
           <main className="flex-1">{children}</main>
-          {!isDashboard && <Footer />}
+          {!hideHeaderFooter && <Footer />}
           <Toaster />
         </FirebaseClientProvider>
       </body>
