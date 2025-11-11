@@ -46,76 +46,172 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"user" | "agent">("user");
   const [isLoading, setIsLoading] = useState(false);
-  <change>
-    <file>/src/app/dashboard/user/reviews/page.tsx</file>
-    <content><![CDATA['use client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star } from "lucide-react";
-import { mockUserReviews } from "@/lib/mock-data";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth) return;
+    setIsLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
+      
+      toast({ title: "Account Created Successfully" });
+      const userRole = getMockRole(userCredential.user.email);
+      router.push(`/dashboard/${userRole}`);
 
-export default function ReviewsPage() {
-    const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+  const handleGoogleSignIn = async () => {
+    if (!auth) return;
+    setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      toast({ title: "Google Sign-In Successful" });
+      const userRole = getMockRole(result.user.email);
+      router.push(`/dashboard/${userRole}`);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: error.message,
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
+
   return (
-    <div>
-       <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Star className="h-6 w-6 text-primary" />
-        My Reviews
-      </h1>
-      {mockUserReviews.length > 0 ? (
-        <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" variants={containerVariants} initial="hidden" animate="visible">
-          {mockUserReviews.map((review) => (
-            <motion.div key={review.id} variants={itemVariants}>
-              <Card className="bg-white/5 backdrop-blur-sm border-white/10 h-full flex flex-col">
-                <CardHeader>
-                  <CardTitle>{review.destination}</CardTitle>
-                  <CardDescription>Review for {review.agentName}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col justify-between">
-                    <p className="italic text-muted-foreground">&quot;{review.comment}&quot;</p>
-                    <div className="flex items-center mt-4">
-                        {[...Array(5)].map((_, i) => (
-                            <Star
-                                key={i}
-                                className={cn(
-                                    "w-5 h-5",
-                                    i < review.rating ? "fill-accent text-accent" : "text-slate-500"
-                                )}
-                            />
-                        ))}
-                    </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-      ) : (
-        <motion.div 
-          className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-white/20 rounded-lg"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
+      <div className="hidden bg-muted lg:block relative">
+        <Image
+          src="https://picsum.photos/seed/signup-page/1200/1800"
+          alt="Image"
+          fill
+          className="object-cover brightness-50"
+          data-ai-hint="mountain landscape"
+        />
+      </div>
+      <div className="flex items-center justify-center py-12">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mx-auto grid w-[350px] gap-6"
         >
-          <Star className="w-16 h-16 text-muted-foreground mb-4" />
-          <h3 className="text-xl font-semibold">No reviews yet.</h3>
-          <p className="text-muted-foreground mt-2">Complete a trip to leave a review!</p>
+          <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <MountainSnow className="mx-auto h-10 w-10 text-primary mb-4" />
+              <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
+              <CardDescription>Join SafarHub to start your next adventure</CardDescription>
+            </CardHeader>
+            <form onSubmit={handleSignup}>
+              <CardContent className="grid gap-4">
+                 <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    type="button" 
+                    onClick={handleGoogleSignIn}
+                    disabled={isGoogleLoading || isLoading}
+                  >
+                    <svg role="img" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
+                      <path
+                        fill="currentColor"
+                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.85 3.18-1.73 4.1-1.05 1.05-2.36 1.62-3.82 1.62-3.32 0-6.03-2.75-6.03-6.12s2.7-6.12 6.03-6.12c1.87 0 3.13.78 4.08 1.68l2.5-2.5C18.43 2.1 15.72 1 12.48 1 7.03 1 3 5.03 3 10.5s4.03 9.5 9.48 9.5c2.83 0 5.1-1 6.8-2.65 1.8-1.7 2.6-4.2 2.6-6.8V10.92h-7.84z"
+                      />
+                    </svg>
+                    {isGoogleLoading ? "Signing up..." : "Sign up with Google"}
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-card/80 px-2 text-muted-foreground">
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input 
+                    id="name" 
+                    placeholder="John Doe" 
+                    required 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    disabled={isLoading || isGoogleLoading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading || isGoogleLoading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    required 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading || isGoogleLoading}
+                  />
+                </div>
+                 <div className="grid gap-2">
+                    <Label>I am a:</Label>
+                     <RadioGroup 
+                        defaultValue="user" 
+                        className="flex gap-4" 
+                        value={role} 
+                        onValueChange={(value: "user" | "agent") => setRole(value)}
+                        >
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="user" id="user" />
+                            <Label htmlFor="user">Traveler</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="agent" id="agent" />
+                            <Label htmlFor="agent">Travel Agent</Label>
+                        </div>
+                    </RadioGroup>
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-col gap-4">
+                <Button className="w-full" type="submit" disabled={isLoading || isGoogleLoading}>
+                  {isLoading ? "Creating Account..." : "Create account"}
+                </Button>
+                 <div className="text-sm text-muted-foreground">
+                    Already have an account?{" "}
+                    <Link href="/login" className="text-primary hover:underline font-semibold">
+                      Log in
+                    </Link>
+                  </div>
+              </CardFooter>
+            </form>
+          </Card>
         </motion.div>
-      )}
+      </div>
     </div>
   );
 }
