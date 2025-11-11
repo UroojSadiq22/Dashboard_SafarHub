@@ -51,17 +51,15 @@ export default function Hero() {
       >
         <CarouselContent className="h-full">
           {heroImages.map((image, index) => (
-            <CarouselItem key={index} className="h-full relative">
-               <div className="absolute inset-0 overflow-hidden">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className="object-cover brightness-50 animate-kenburns"
-                  priority={index === 0}
-                  data-ai-hint={image.hint}
-                />
-              </div>
+            <CarouselItem key={index} className="h-full">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover brightness-50 animate-kenburns"
+                priority={index === 0}
+                data-ai-hint={image.hint}
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
