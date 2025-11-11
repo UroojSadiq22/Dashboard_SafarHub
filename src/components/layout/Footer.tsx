@@ -11,10 +11,10 @@ export default function Footer() {
             <span className="font-bold">SafarHub</span>
           </div>
           <p className="text-center text-sm text-muted-foreground md:text-left">
-            Your one-stop marketplace for unforgettable travel experiences.
+            Your Journey Starts Here.
           </p>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} SafarHub. All rights reserved.
+            &copy; {new Date().getFullYear()} SafarHub | Built with Firebase & Gemini AI.
           </p>
         </div>
       </div>

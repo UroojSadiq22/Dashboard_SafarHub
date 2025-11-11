@@ -1,34 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, UserCheck, Briefcase, Plane } from "lucide-react";
+import { Search, UserCheck, Briefcase } from "lucide-react";
 
 const steps = [
   {
     icon: <Search className="w-10 h-10 text-chart-1" />,
-    title: "Find Your Agent or Package",
+    title: "Search Your Dream Destination",
     description: "Use our powerful search to discover vetted travel agents or browse through unique, ready-to-book travel packages for every style.",
     color: "text-chart-1",
     bg: "bg-chart-1/10"
   },
   {
     icon: <UserCheck className="w-10 h-10 text-chart-2" />,
-    title: "Connect & Plan",
+    title: "Compare Verified Travel Agents",
     description: "Connect directly with agents to plan a custom trip or inquire about a package. Get expert advice to tailor your perfect itinerary.",
     color: "text-chart-2",
     bg: "bg-chart-2/10"
   },
   {
     icon: <Briefcase className="w-10 h-10 text-chart-3" />,
-    title: "Book with Confidence",
+    title: "Book With Confidence",
     description: "Finalize your travel plans and book securely through our platform. All our agents are verified for your peace of mind.",
     color: "text-chart-3",
     bg: "bg-chart-3/10"
-  },
-  {
-    icon: <Plane className="w-10 h-10 text-chart-4" />,
-    title: "Enjoy Your Adventure",
-    description: "Travel stress-free knowing every detail has been handled by a professional. Your dream vacation is just a few clicks away!",
-    color: "text-chart-4",
-    bg: "bg-chart-4/10"
   },
 ]
 
@@ -39,10 +32,10 @@ export default function HowItWorks() {
         <div className="text-center mb-12">
           <h2 className="font-headline text-4xl font-bold tracking-tight">How It Works</h2>
           <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto font-body">
-            Your journey to an unforgettable vacation in 4 simple steps.
+            Your journey to an unforgettable vacation in 3 simple steps.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, index) => (
             <Card key={index} className="text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group">
               <CardHeader>

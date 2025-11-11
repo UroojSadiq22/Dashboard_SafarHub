@@ -1,70 +1,51 @@
 import { mockPackages } from "@/lib/mock-data";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
 import Link from "next/link";
+import { Plane, Star, LogOut, Package } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function UserDashboardPage() {
-  // Mock bookings for the current user
-  const userBookings = [
-    { id: "book-1", packageId: "pkg-1", status: "confirmed", pax: 2 },
-    { id: "book-2", packageId: "pkg-4", status: "pending", pax: 1 },
-  ];
-
-  const getPackageDetails = (packageId: string) => {
-    return mockPackages.find(p => p.id === packageId);
-  }
 
   return (
     <div className="p-4 md:p-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>My Bookings</CardTitle>
-          <CardDescription>Here are all the trips you've booked or inquired about.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Trip</TableHead>
-                <TableHead>Destination</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {userBookings.map((booking) => {
-                const pkg = getPackageDetails(booking.packageId);
-                if (!pkg) return null;
-
-                return (
-                  <TableRow key={booking.id}>
-                    <TableCell className="font-medium">{pkg.title}</TableCell>
-                    <TableCell>{pkg.destination}</TableCell>
-                    <TableCell className="text-center">
-                      <Badge 
-                        variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
-                        className={booking.status === 'confirmed' ? 'bg-green-600' : ''}
-                      >
-                        {booking.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                       <Button variant="outline" size="sm" asChild>
-                         <Link href={`/packages/${pkg.id}`}>
-                            <Eye className="mr-2 h-4 w-4" /> View Trip
-                         </Link>
-                       </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Link href="/packages">
+         <Card className="group flex flex-col justify-between h-full hover:bg-primary/10 transition-colors duration-300 ease-in-out transform hover:-translate-y-1">
+            <CardHeader>
+              <Package className="h-8 w-8 text-primary mb-2 group-hover:text-accent transition-colors" />
+              <CardTitle>Explore Packages</CardTitle>
+              <CardDescription>Find your next adventure from our curated list of travel packages.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="link" className="p-0">Browse Packages &rarr;</Button>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/user/bookings">
+          <Card className="group flex flex-col justify-between h-full hover:bg-primary/10 transition-colors duration-300 ease-in-out transform hover:-translate-y-1">
+            <CardHeader>
+              <Plane className="h-8 w-8 text-primary mb-2 group-hover:text-accent transition-colors" />
+              <CardTitle>My Bookings</CardTitle>
+              <CardDescription>View your current and past trip bookings.</CardDescription>
+            </CardHeader>
+            <CardContent>
+               <Button variant="link" className="p-0">View Bookings &rarr;</Button>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/user/reviews">
+          <Card className="group flex flex-col justify-between h-full hover:bg-primary/10 transition-colors duration-300 ease-in-out transform hover:-translate-y-1">
+            <CardHeader>
+              <Star className="h-8 w-8 text-primary mb-2 group-hover:text-accent transition-colors" />
+              <CardTitle>My Reviews</CardTitle>
+              <CardDescription>See all the reviews you have submitted for agents.</CardDescription>
+            </CardHeader>
+             <CardContent>
+               <Button variant="link" className="p-0">Manage Reviews &rarr;</Button>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
     </div>
   );
 }

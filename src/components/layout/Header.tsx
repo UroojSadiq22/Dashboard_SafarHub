@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Plane, Menu, MountainSnow, LogOut, Settings } from "lucide-react";
+import { Plane, Menu, MountainSnow } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,39 +11,19 @@ import {
 } from "@/components/ui/sheet";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUser, useAuth } from "@/firebase";
-import { signOut } from "firebase/auth";
-import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/firebase";
+
 
 const navLinks = [
-  { href: "/packages", label: "Packages" },
-  { href: "/agents", label: "Agents" },
   { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#destinations", label: "Popular Destinations" },
   { href: "/#testimonials", label: "Testimonials" },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const { user, isUserLoading } = useUser();
-  const auth = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
-
-  const handleSignOut = async () => {
-    if (!auth) return;
-    try {
-      await signOut(auth);
-      toast({ title: "Signed out successfully." });
-      router.push("/");
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Sign out failed.",
-        description: error.message,
-      });
-    }
-  };
 
   const NavLink = ({
     href,
@@ -66,6 +46,7 @@ export default function Header() {
           targetElement.scrollIntoView({ behavior: 'smooth' });
         }
       } else if (isAnchor && !isHome) {
+        // Navigate to home and then scroll
         router.push(href);
       }
     };
@@ -76,9 +57,7 @@ export default function Header() {
       onClick={handleClick}
       className={cn(
         "text-sm font-medium transition-colors hover:text-primary",
-        pathname === href
-          ? "text-primary"
-          : "text-muted-foreground",
+        "text-muted-foreground",
         className
       )}
     >
@@ -102,15 +81,9 @@ export default function Header() {
 
         <div className="flex flex-1 items-center justify-end gap-2">
           {!isUserLoading && user ? (
-            <>
-               <Avatar className="h-9 w-9">
-                <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`} />
-                <AvatarFallback>{user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</AvatarFallback>
-              </Avatar>
               <Button variant="outline" asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
-            </>
           ) : !isUserLoading && (
             <>
               <Button variant="ghost" asChild>

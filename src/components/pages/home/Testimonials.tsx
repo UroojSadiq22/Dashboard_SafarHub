@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import { mockReviews } from "@/lib/mock-data";
@@ -15,18 +15,6 @@ const testimonials = mockReviews.map(review => ({
 
 
 export default function Testimonials() {
-  const [index, setIndex] = useState(0);
-
-  const handleNext = () => {
-    setIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(handleNext, 5000);
-    return () => clearTimeout(timer);
-  }, [index]);
-  
-  // Duplicate the array to create a seamless loop effect
   const duplicatedTestimonials = [...testimonials, ...testimonials];
 
   return (
@@ -44,11 +32,17 @@ export default function Testimonials() {
         <div className="w-full overflow-hidden">
             <motion.div
               className="flex gap-6"
-              animate={{ x: `-${index * (100 / 3)}%` }}
-              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+              animate={{
+                x: ['0%', '-100%'],
+              }}
+              transition={{
+                ease: 'linear',
+                duration: 20,
+                repeat: Infinity,
+              }}
             >
               {duplicatedTestimonials.map((review, i) => (
-                <div key={`${review.id}-${i}`} className="w-full md:w-1/3 flex-shrink-0">
+                <div key={`${review.id}-${i}`} className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
                   <Card review={review} />
                 </div>
               ))}
@@ -81,7 +75,8 @@ const Card = ({ review }: { review: typeof testimonials[0] }) => {
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1, transition: { delay: 0.5 + i * 0.1 } }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 + i * 0.1 }}
                     >
                         <Star
                             className={cn(
