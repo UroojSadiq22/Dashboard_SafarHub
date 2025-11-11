@@ -63,4 +63,9 @@ export default function ReviewsPage() {
         >
           <Star className="w-16 h-16 text-muted-foreground mb-4" />
           <h3 className="text-xl font-semibold">No reviews yet.</h3>
-          <p className="text-muted-foreground mt-2
+          <p className="text-muted-foreground mt-2">After a trip, you can review your agent here.</p>
+        </motion.div>
+      )}
+    </div>
+  );
+}
