@@ -14,22 +14,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MountainSnow } from "lucide-react";
 import Link from "next/link";
-import { useAuth, useFirestore } from "@/firebase";
+import { useAuth } from "@/firebase";
 import { 
   signInWithEmailAndPassword, 
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+type Role = 'user' | 'agent' | 'admin';
+
+const getMockRole = (email?: string | null): Role => {
+  if (!email) return 'user';
+  if (email.includes('admin')) return 'admin';
+  if (email.includes('agent')) return 'agent';
+  return 'user';
+}
 
 export default function LoginPage() {
   const auth = useAuth();
-  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -42,9 +48,10 @@ export default function LoginPage() {
      if (!auth) return;
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
       toast({ title: "Login Successful" });
-      router.push("/dashboard");
+      const role = getMockRole(cred.user.email);
+      router.push(`/dashboard/${role}`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -57,28 +64,14 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
-    if (!auth || !firestore) return;
+    if (!auth) return;
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userDocRef = doc(firestore, 'users', user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          role: 'user', 
-          phone: user.phoneNumber || ''
-        });
-      }
-
       toast({ title: "Google Sign-In Successful" });
-      router.push("/dashboard");
+      const role = getMockRole(result.user.email);
+      router.push(`/dashboard/${role}`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -176,9 +169,8 @@ export default function LoginPage() {
             <Image
                 src="https://picsum.photos/seed/login-page/1200/1800"
                 alt="Image"
-                layout="fill"
-                objectFit="cover"
-                className="brightness-50"
+                fill
+                className="object-cover brightness-50"
                 data-ai-hint="exotic beach"
             />
         </div>

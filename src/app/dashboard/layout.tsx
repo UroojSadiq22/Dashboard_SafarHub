@@ -34,30 +34,51 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser, useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { signOut } from 'firebase/auth';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
-// MOCK DATA
-const mockUser = {
-  name: "Ayesha Khan",
-  email: "ayesha@example.com",
-  role: "user",
-  photoURL: "https://picsum.photos/seed/user-ayesha/40/40"
-};
-const isAdmin = false;
-const role = mockUser.role;
+type Role = 'user' | 'agent' | 'admin';
+
+const getMockRole = (email?: string | null): Role => {
+  if (!email) return 'user';
+  if (email.includes('admin')) return 'admin';
+  if (email.includes('agent')) return 'agent';
+  return 'user';
+}
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isUserLoading } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
+
+  const [role, setRole] = useState<Role>('user');
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+    if (user) {
+      const userRole = getMockRole(user.email);
+      setRole(userRole);
+      
+      const expectedPath = `/dashboard/${userRole}`;
+      if (!pathname.startsWith(expectedPath) && pathname !== '/dashboard') {
+         router.replace(expectedPath);
+      } else if (pathname === '/dashboard') {
+         router.replace(expectedPath);
+      }
+
+    }
+  }, [user, isUserLoading, router, pathname]);
 
   const handleSignOut = async () => {
     if (!auth) return;
@@ -76,6 +97,14 @@ export default function DashboardLayout({
 
   const displayName = user?.displayName || user?.email?.split('@')[0] || "Explorer";
 
+  if (isUserLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>Loading your dashboard...</p>
+      </div>
+    );
+  }
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -89,7 +118,7 @@ export default function DashboardLayout({
           </div>
         </SidebarHeader>
         <SidebarContent>
-          {isAdmin && (
+          {role === 'admin' && (
              <SidebarGroup>
                 <SidebarGroupLabel>Admin</SidebarGroupLabel>
                  <SidebarMenu>
@@ -98,14 +127,6 @@ export default function DashboardLayout({
                             <Link href="/dashboard/admin">
                                 <LayoutDashboard />
                                 <span>Dashboard</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild tooltip="Verify Agents">
-                            <Link href="/dashboard/admin/verify">
-                                <Shield />
-                                <span>Verify Agents</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -161,13 +182,13 @@ export default function DashboardLayout({
             </SidebarGroup>
           )}
           
-          {(role === 'user' || !role) && !isAdmin && (
+          {role === 'user' && (
              <SidebarGroup>
               <SidebarGroupLabel>My Account</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Dashboard">
-                        <Link href="/dashboard">
+                        <Link href="/dashboard/user">
                             <LayoutDashboard />
                             <span>Dashboard</span>
                         </Link>

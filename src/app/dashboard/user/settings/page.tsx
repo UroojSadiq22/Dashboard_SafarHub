@@ -29,11 +29,18 @@ export default function SettingsPage() {
     }, [user]);
 
     const handleSaveChanges = async () => {
-        if (!user || !auth?.currentUser) return;
+        if (!user || !auth?.currentUser) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "You must be logged in to save changes.",
+            });
+            return;
+        };
 
         try {
             await updateProfile(auth.currentUser, { displayName: name });
-            // In a real app, you would also update Firestore here.
+            // In a real app, you would also update phone in Firestore.
             toast({
                 title: "Profile Updated",
                 description: "Your changes have been saved successfully.",
@@ -49,7 +56,7 @@ export default function SettingsPage() {
     };
 
     const handleChangePassword = async () => {
-        if (!user?.email) {
+        if (!user?.email || !auth) {
             toast({
                 variant: "destructive",
                 title: "Error",

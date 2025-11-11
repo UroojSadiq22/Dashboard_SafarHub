@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { useAuth } from '@/firebase/provider'; // Assuming useAuth is now in provider
+import { useAuth } from '@/firebase/provider'; 
 
 export interface UseUserResult {
   user: User | null;
@@ -17,7 +17,7 @@ export interface UseUserResult {
  */
 export function useUser(): UseUserResult {
   const auth = useAuth();
-  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [user, setUser] = useState<User | null>(auth?.currentUser || null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -26,14 +26,14 @@ export function useUser(): UseUserResult {
     if (!auth) {
       setUser(null);
       setIsLoading(false);
-      setError(new Error("Firebase Auth instance is not available."));
+      // We don't set an error here because auth might not be available during SSR
+      // and that's an expected condition. The provider will throw if used incorrectly.
       return;
     }
 
     // Set initial state based on the current user if available
     setIsLoading(true);
     setUser(auth.currentUser);
-
 
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -48,17 +48,19 @@ export function useUser(): UseUserResult {
       }
     );
 
-    // Initial check might resolve fast, so ensure loading is false after a short delay
-    // This helps prevent a flash of "loading" on fast connections
-    const timer = setTimeout(() => {
-        if(isLoading) setIsLoading(false);
-    }, 500);
+    // Make sure loading state is updated even if no change event fires
+    // (e.g., user is already signed out)
+    if (isLoading) {
+      setTimeout(() => {
+          if (isLoading) setIsLoading(false);
+      }, 300); // A short delay to handle fast connections
+    }
+
 
     return () => {
         unsubscribe();
-        clearTimeout(timer);
     }
-  }, [auth]);
+  }, [auth]); // Dependency on `auth` instance is crucial
 
   return { user, isLoading, error };
 }

@@ -20,7 +20,7 @@ export default function BookingsPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 20 }
+    visible: { opacity: 1, y: 0 } // Corrected visible y to 0
   };
 
   const getStatusVariant = (status: string) => {
