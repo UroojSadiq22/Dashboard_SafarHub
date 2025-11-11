@@ -23,6 +23,12 @@ import {
   Plane,
   Settings,
   LogOut,
+  BarChart,
+  Users,
+  Package,
+  PlusCircle,
+  MessageSquare,
+  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -39,7 +45,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useUser();
+  const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const auth = useAuth();
   const router = useRouter();
@@ -64,7 +70,7 @@ export default function DashboardLayout({
     try {
       await signOut(auth);
       toast({ title: "Signed out successfully." });
-      router.push("/");
+      router.push("/login");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -73,7 +79,6 @@ export default function DashboardLayout({
       });
     }
   };
-
 
   return (
     <SidebarProvider>
@@ -88,74 +93,122 @@ export default function DashboardLayout({
           </div>
         </SidebarHeader>
         <SidebarContent>
-          
           {isAdmin && (
-            <SidebarGroup>
-              <SidebarGroupLabel>Admin</SidebarGroupLabel>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Verify Agents">
-                    <Link href="/dashboard/admin">
-                      <Shield />
-                      <span>Verify Agents</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
+             <SidebarGroup>
+                <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                 <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild tooltip="Dashboard">
+                            <Link href="/dashboard/admin">
+                                <LayoutDashboard />
+                                <span>Dashboard</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild tooltip="Verify Agents">
+                            <Link href="/dashboard/admin/verify">
+                                <Shield />
+                                <span>Verify Agents</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+             </SidebarGroup>
           )}
 
-          
           {role === 'agent' && (
             <SidebarGroup>
               <SidebarGroupLabel>Agent</SidebarGroupLabel>
               <SidebarMenu>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Dashboard">
+                        <Link href="/dashboard/agent">
+                            <LayoutDashboard />
+                            <span>Dashboard</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Create Package">
+                        <Link href="/dashboard/agent/new-package">
+                            <PlusCircle />
+                            <span>Create Package</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="My Packages">
+                        <Link href="/dashboard/agent/packages">
+                            <Briefcase />
+                            <span>My Packages</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="My Packages">
-                    <Link href="/dashboard/agent">
-                      <Briefcase />
-                      <span>My Packages</span>
+                  <SidebarMenuButton asChild tooltip="Inquiries">
+                    <Link href="/dashboard/agent/inquiries">
+                      <MessageSquare />
+                      <span>Inquiries</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Bookings">
-                    <Link href="/dashboard/agent/bookings">
-                      <LayoutDashboard />
-                      <span>Bookings</span>
+                 <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Reviews">
+                    <Link href="/dashboard/agent/reviews">
+                      <Star />
+                      <span>Reviews</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroup>
           )}
-
           
-          {(role === 'user' || role === 'agent' || isAdmin) && (
+          {(role === 'user' || !role) && !isAdmin && (
              <SidebarGroup>
               <SidebarGroupLabel>My Account</SidebarGroupLabel>
               <SidebarMenu>
-                 {role === 'user' &&
-                    <>
-                        <SidebarMenuItem>
-                        <SidebarMenuButton asChild tooltip="My Bookings">
-                            <Link href="/dashboard/user">
-                            <Plane />
-                            <span>My Bookings</span>
-                            </Link>
-                        </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                        <SidebarMenuButton asChild tooltip="Wishlist">
-                            <Link href="/dashboard/user/wishlist">
-                            <Heart />
-                            <span>Wishlist</span>
-                            </Link>
-                        </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </>
-                 }
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Dashboard">
+                        <Link href="/dashboard/user">
+                            <LayoutDashboard />
+                            <span>Dashboard</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="My Bookings">
+                        <Link href="/dashboard/user/bookings">
+                        <Plane />
+                        <span>My Bookings</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="My Reviews">
+                        <Link href="/dashboard/user/reviews">
+                        <Star />
+                        <span>My Reviews</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Wishlist">
+                        <Link href="/dashboard/user/wishlist">
+                        <Heart />
+                        <span>Wishlist</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
+
+          <SidebarGroup>
+             <SidebarGroupLabel>General</SidebarGroupLabel>
+             <SidebarMenu>
+                <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Account Settings">
                     <Link href="/dashboard/user/settings">
                       <Settings />
@@ -163,9 +216,8 @@ export default function DashboardLayout({
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
-          )}
+             </SidebarMenu>
+          </SidebarGroup>
 
         </SidebarContent>
         <SidebarFooter>
@@ -189,7 +241,12 @@ export default function DashboardLayout({
             )}
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+         <div className='p-4 md:p-8'>
+            <h1 className='text-3xl font-bold mb-8'>Welcome back, {user?.displayName ?? 'Explorer'} 👋</h1>
+            {children}
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
