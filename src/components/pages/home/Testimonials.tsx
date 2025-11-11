@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, ArrowLeft, ArrowRight } from "lucide-react";
+import { Star } from "lucide-react";
 import { mockReviews } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -21,20 +21,13 @@ export default function Testimonials() {
     setIndex((prev) => (prev + 1) % testimonials.length);
   };
 
-  const handlePrev = () => {
-    setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
   useEffect(() => {
     const timer = setTimeout(handleNext, 5000);
     return () => clearTimeout(timer);
   }, [index]);
-
-  const visibleTestimonials = [
-    testimonials[index],
-    testimonials[(index + 1) % testimonials.length],
-    testimonials[(index + 2) % testimonials.length],
-  ];
+  
+  // Duplicate the array to create a seamless loop effect
+  const duplicatedTestimonials = [...testimonials, ...testimonials];
 
   return (
     <section id="testimonials" className="py-16 md:py-24 bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden">
@@ -47,36 +40,21 @@ export default function Testimonials() {
             Hear from those who explored the world with us.
           </p>
         </div>
-
-        <div className="relative flex items-center justify-center">
-          <button onClick={handlePrev} className="absolute left-0 z-10 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-white disabled:opacity-50 -translate-x-1/2">
-            <ArrowLeft size={24}/>
-          </button>
-          
-          <div className="flex w-full max-w-6xl gap-6">
-            <AnimatePresence mode="popLayout">
-                {visibleTestimonials.map((review, i) => (
-                    <motion.div
-                        key={review.id}
-                        className={cn(
-                            "w-1/3 flex-shrink-0 transition-all duration-300",
-                             i === 1 ? 'z-10' : 'z-0'
-                        )}
-                        initial={{ opacity: 0, x: 100, scale: 0.8 }}
-                        animate={{ opacity: 1, x: 0, scale: i === 1 ? 1.05 : 0.9, transition: { delay: i * 0.1 } }}
-                        exit={{ opacity: 0, x: -100, scale: 0.8 }}
-                        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                    >
-                        <Card review={review} />
-                    </motion.div>
-                ))}
-            </AnimatePresence>
-          </div>
-          
-          <button onClick={handleNext} className="absolute right-0 z-10 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-white disabled:opacity-50 translate-x-1/2">
-            <ArrowRight size={24}/>
-          </button>
+        
+        <div className="w-full overflow-hidden">
+            <motion.div
+              className="flex gap-6"
+              animate={{ x: `-${index * (100 / 3)}%` }}
+              transition={{ type: "spring", stiffness: 100, damping: 30 }}
+            >
+              {duplicatedTestimonials.map((review, i) => (
+                <div key={`${review.id}-${i}`} className="w-full md:w-1/3 flex-shrink-0">
+                  <Card review={review} />
+                </div>
+              ))}
+            </motion.div>
         </div>
+
       </div>
     </section>
   );

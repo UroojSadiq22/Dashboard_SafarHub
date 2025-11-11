@@ -48,20 +48,20 @@ export default function Hero() {
           loop: true,
         }}
         className="absolute inset-0 w-full h-full"
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
       >
         <CarouselContent className="h-full">
           {heroImages.map((image, index) => (
-            <CarouselItem key={index} className="h-full">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover brightness-50 animate-kenburns"
-                priority={index === 0}
-                data-ai-hint={image.hint}
-              />
+            <CarouselItem key={index} className="h-full relative">
+               <div className="absolute inset-0 overflow-hidden">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover brightness-50 animate-kenburns"
+                  priority={index === 0}
+                  data-ai-hint={image.hint}
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -88,19 +88,6 @@ export default function Hero() {
           </form>
         </div>
       </div>
-      <style jsx>{`
-        @keyframes kenburns {
-          0% {
-            transform: scale(1.1) translate(0, 0);
-          }
-          100% {
-            transform: scale(1) translate(0, 0);
-          }
-        }
-        .animate-kenburns {
-          animation: kenburns 8s ease-out forwards;
-        }
-      `}</style>
     </section>
   );
 }
