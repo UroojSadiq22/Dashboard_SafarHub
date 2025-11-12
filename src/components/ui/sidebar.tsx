@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -92,12 +93,37 @@ export const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex h-16 items-center border-b px-4",
-        !isOpen && "justify-center",
+        "flex h-16 shrink-0 items-center border-b",
+        isOpen ? "gap-2 px-4" : "justify-center",
         className
       )}
       {...props}
-    />
+    >
+      {React.Children.map(props.children, (child, index) => {
+        if (React.isValidElement(child)) {
+          if (child.type === "a" || child.type === Link) {
+            const childProps = child.props as React.AnchorHTMLAttributes<HTMLAnchorElement>;
+            return React.cloneElement(child, {
+              ...childProps,
+              className: cn(
+                "flex items-center gap-2 font-bold text-lg",
+                childProps.className
+              ),
+              children: React.Children.map(
+                child.props.children,
+                (grandchild, grandIndex) => {
+                  if (React.isValidElement(grandchild) && grandchild.type === "span" && !isOpen) {
+                    return null;
+                  }
+                  return grandchild;
+                }
+              ),
+            });
+          }
+        }
+        return child;
+      })}
+    </div>
   );
 });
 SidebarHeader.displayName = "SidebarHeader";
@@ -150,12 +176,24 @@ export const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex h-16 items-center border-t px-4",
-        !isOpen && "justify-center",
+        "flex shrink-0 h-auto flex-col items-stretch gap-2 border-t p-2",
         className
       )}
       {...props}
-    />
+    >
+      {React.Children.map(props.children, (child) => {
+        if (React.isValidElement(child)) {
+          // Check for the user info div
+          if (child.props.className?.includes("items-center")) {
+            return React.cloneElement(child, {
+              ...child.props,
+              className: cn("transition-all", isOpen ? "flex" : "hidden", child.props.className),
+            });
+          }
+        }
+        return child;
+      })}
+    </div>
   );
 });
 SidebarFooter.displayName = "SidebarFooter";
