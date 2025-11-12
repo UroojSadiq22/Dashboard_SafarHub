@@ -58,15 +58,21 @@ export default function LoginPage() {
 
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
-       <div className="flex items-center justify-center py-12">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto grid w-[350px] gap-6"
-          >
-            <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm">
+    <div className="relative flex min-h-screen items-center justify-center py-12 px-4">
+       <Image
+          src="https://picsum.photos/seed/login-page/1920/1080"
+          alt="Exotic beach background"
+          fill
+          className="object-cover -z-10 brightness-50"
+          data-ai-hint="exotic beach"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+            <Card className="w-full shadow-2xl bg-card/80 backdrop-blur-sm border-white/20">
               <CardHeader className="text-center">
                 <MountainSnow className="mx-auto h-10 w-10 text-primary mb-4" />
                 <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
@@ -94,7 +100,7 @@ export default function LoginPage() {
                       <span className="w-full border-t" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card/80 px-2 text-muted-foreground">
+                      <span className="bg-card px-2 text-muted-foreground">
                         Or continue with
                       </span>
                     </div>
@@ -136,17 +142,7 @@ export default function LoginPage() {
                 </CardFooter>
               </form>
             </Card>
-          </motion.div>
-        </div>
-        <div className="hidden bg-muted lg:block relative">
-            <Image
-                src="https://picsum.photos/seed/login-page/1200/1800"
-                alt="Image"
-                fill
-                className="object-cover brightness-50"
-                data-ai-hint="exotic beach"
-            />
-        </div>
+        </motion.div>
     </div>
   );
 }

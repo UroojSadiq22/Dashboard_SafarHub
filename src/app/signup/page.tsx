@@ -53,24 +53,21 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
-      <div className="hidden bg-muted lg:block relative">
+    <div className="relative flex min-h-screen items-center justify-center py-12 px-4">
         <Image
-          src="https://picsum.photos/seed/signup-page/1200/1800"
-          alt="Image"
+          src="https://picsum.photos/seed/signup-page/1920/1080"
+          alt="Mountain landscape background"
           fill
-          className="object-cover brightness-50"
+          className="object-cover -z-10 brightness-50"
           data-ai-hint="mountain landscape"
         />
-      </div>
-      <div className="flex items-center justify-center py-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mx-auto grid w-[350px] gap-6"
+          className="w-full max-w-md"
         >
-          <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm">
+          <Card className="w-full shadow-2xl bg-card/80 backdrop-blur-sm border-white/20">
             <CardHeader className="text-center">
               <MountainSnow className="mx-auto h-10 w-10 text-primary mb-4" />
               <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
@@ -99,7 +96,7 @@ export default function SignupPage() {
                       <span className="w-full border-t" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card/80 px-2 text-muted-foreground">
+                      <span className="bg-card px-2 text-muted-foreground">
                         Or continue with
                       </span>
                     </div>
@@ -172,7 +169,6 @@ export default function SignupPage() {
             </form>
           </Card>
         </motion.div>
-      </div>
     </div>
   );
 }
