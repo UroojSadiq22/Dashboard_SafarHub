@@ -102,7 +102,7 @@ export const SidebarHeader = React.forwardRef<
     >
       {React.Children.map(props.children, (child) => {
         if (React.isValidElement(child)) {
-          if (child.type === 'a' || child.type === Link) {
+           if (child.type === 'a' || child.type === Link) {
             const childProps =
               child.props as React.AnchorHTMLAttributes<HTMLAnchorElement>;
             return React.cloneElement(child, {
@@ -250,7 +250,7 @@ export const SidebarMenuButton = React.forwardRef<
   const { isOpen } = useSidebar();
 
   const buttonContent = (
-    <>
+    <div className="flex items-center gap-2">
       {React.Children.map(props.children, (child, index) => {
         // First child is the icon
         if (React.isValidElement(child) && index === 0) {
@@ -265,7 +265,7 @@ export const SidebarMenuButton = React.forwardRef<
         }
         return child;
       })}
-    </>
+    </div>
   );
 
   const button = (
@@ -273,7 +273,7 @@ export const SidebarMenuButton = React.forwardRef<
       ref={ref as any}
       variant="ghost"
       className={cn(
-        "h-10 w-full justify-start gap-2",
+        "h-10 w-full justify-start",
         !isOpen && "justify-center",
         className
       )}
