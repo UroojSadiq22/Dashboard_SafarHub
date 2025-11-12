@@ -18,6 +18,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { X, Menu } from "lucide-react";
+import Link from "next/link";
 
 interface SidebarContextProps {
   isOpen: boolean;
