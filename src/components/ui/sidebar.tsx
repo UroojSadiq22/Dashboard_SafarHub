@@ -95,7 +95,7 @@ export const SidebarHeader = React.forwardRef<
       ref={ref}
       className={cn(
         'flex h-16 shrink-0 items-center border-b',
-        isOpen ? 'gap-2 px-4' : 'justify-center px-2',
+        isOpen ? 'gap-2 px-4' : 'justify-center',
         className
       )}
       {...props}
