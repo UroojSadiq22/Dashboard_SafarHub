@@ -95,7 +95,7 @@ export const SidebarHeader = React.forwardRef<
       ref={ref}
       className={cn(
         "flex h-16 shrink-0 items-center border-b",
-        isOpen ? "gap-2 px-4" : "justify-center",
+        isOpen ? "gap-2 px-4" : "justify-center px-2",
         className
       )}
       {...props}
@@ -240,6 +240,25 @@ export const SidebarMenuButton = React.forwardRef<
 >(({ asChild, tooltip, className, ...props }, ref) => {
   const { isOpen } = useSidebar();
 
+  const buttonContent = (
+    <>
+      {React.Children.map(props.children, (child, index) => {
+        // First child is the icon
+        if (React.isValidElement(child) && index === 0) {
+          return React.cloneElement(child, {
+            ...child.props,
+            className: cn("text-primary", child.props.className),
+          });
+        }
+        // Second child is the text, hide if sidebar is closed
+        if (React.isValidElement(child) && index === 1 && !isOpen) {
+          return null; 
+        }
+        return child;
+      })}
+    </>
+  );
+
   const button = (
     <Button
       ref={ref as any}
@@ -251,13 +270,7 @@ export const SidebarMenuButton = React.forwardRef<
       )}
       {...props}
     >
-      {props.children &&
-        React.Children.map(props.children, (child, index) => {
-          if (React.isValidElement(child) && index === 1 && !isOpen) {
-            return null; // Don't render the text when sidebar is closed
-          }
-          return child;
-        })}
+      {buttonContent}
     </Button>
   );
 
@@ -279,6 +292,7 @@ export const SidebarMenuButton = React.forwardRef<
   return button;
 });
 SidebarMenuButton.displayName = "SidebarMenuButton";
+
 
 export const SidebarGroup = React.forwardRef<
   HTMLDivElement,
