@@ -12,6 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 
 const navLinks = [
@@ -87,6 +88,7 @@ export default function Header() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end gap-2">
+           <ThemeToggle />
           {isLoggedIn ? (
               <Button variant="outline" asChild>
                 <Link href="/dashboard">Dashboard</Link>
