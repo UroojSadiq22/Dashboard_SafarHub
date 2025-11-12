@@ -20,7 +20,7 @@ export default function BookingsPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 } // Corrected visible y to 0
+    visible: { opacity: 1, y: 0 }
   };
 
   const getStatusVariant = (status: string) => {
@@ -51,13 +51,15 @@ export default function BookingsPage() {
                   <TableHead className="text-center">Status</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody asChild>
-                <motion.tbody variants={containerVariants} initial="hidden" animate="visible">
+              <TableBody>
                   {mockBookings.map((booking) => (
                     <motion.tr 
                       key={booking.id} 
                       className="border-white/10"
                       variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      custom={booking.id}
                       whileHover={{ scale: 1.02, backgroundColor: 'hsl(var(--card))' }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
@@ -70,7 +72,6 @@ export default function BookingsPage() {
                       </TableCell>
                     </motion.tr>
                   ))}
-                </motion.tbody>
               </TableBody>
             </Table>
           </CardContent>
