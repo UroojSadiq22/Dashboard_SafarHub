@@ -16,36 +16,29 @@ import {
 } from '@/components/ui/sidebar';
 import {
   MountainSnow,
-  Shield,
-  Briefcase,
   LayoutDashboard,
-  Heart,
   Plane,
   Settings,
   LogOut,
-  BarChart,
-  Users,
-  Package,
+  Briefcase,
   PlusCircle,
   MessageSquare,
   Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser, useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { useRouter, usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { signOut } from 'firebase/auth';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { mockUserProfile } from '@/lib/mock-data';
 
 type Role = 'user' | 'agent' | 'admin';
 
-const getMockRole = (email?: string | null): Role => {
-  if (!email) return 'user';
-  if (email.includes('admin')) return 'admin';
-  if (email.includes('agent')) return 'agent';
+const getMockRoleFromPath = (pathname: string): Role => {
+  if (pathname.startsWith('/dashboard/admin')) return 'admin';
+  if (pathname.startsWith('/dashboard/agent')) return 'agent';
   return 'user';
 }
 
@@ -54,8 +47,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading: isUserLoading } = useUser();
-  const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -63,27 +54,12 @@ export default function DashboardLayout({
   const [role, setRole] = useState<Role>('user');
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-    if (user) {
-      const userRole = getMockRole(user.email);
-      setRole(userRole);
-      
-      const expectedPath = `/dashboard/${userRole}`;
-      if (!pathname.startsWith(expectedPath) && pathname !== '/dashboard') {
-         router.replace(expectedPath);
-      } else if (pathname === '/dashboard') {
-         router.replace(expectedPath);
-      }
-
-    }
-  }, [user, isUserLoading, router, pathname]);
+    const currentRole = getMockRoleFromPath(pathname);
+    setRole(currentRole);
+  }, [pathname]);
 
   const handleSignOut = async () => {
-    if (!auth) return;
     try {
-      await signOut(auth);
       toast({ title: "Logged out successfully!" });
       router.push("/login");
     } catch (error: any) {
@@ -95,16 +71,8 @@ export default function DashboardLayout({
     }
   };
 
-  const displayName = user?.displayName || user?.email?.split('@')[0] || "Explorer";
+  const displayName = mockUserProfile.name;
 
-  if (isUserLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Loading your dashboard...</p>
-      </div>
-    );
-  }
-  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -224,24 +192,22 @@ export default function DashboardLayout({
 
         </SidebarContent>
         <SidebarFooter>
-            {user && (
-                <div className='w-full'>
-                    <div className="flex items-center gap-2 mb-4">
-                        <Avatar>
-                            <AvatarImage src={user.photoURL ?? `https://picsum.photos/seed/${user.uid}/40/40`} />
-                            <AvatarFallback>{displayName[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col overflow-hidden">
-                            <span className="text-sm font-semibold truncate">{displayName}</span>
-                            <span className="text-xs text-muted-foreground truncate">{user.email}</span>
-                        </div>
+            <div className='w-full'>
+                <div className="flex items-center gap-2 mb-4">
+                    <Avatar>
+                        <AvatarImage src={`https://picsum.photos/seed/user-avatar/40/40`} />
+                        <AvatarFallback>{displayName[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col overflow-hidden">
+                        <span className="text-sm font-semibold truncate">{displayName}</span>
+                        <span className="text-xs text-muted-foreground truncate">{mockUserProfile.email}</span>
                     </div>
-                     <SidebarMenuButton onClick={handleSignOut} tooltip="Log Out">
-                        <LogOut />
-                        <span>Log Out</span>
-                    </SidebarMenuButton>
                 </div>
-            )}
+                 <SidebarMenuButton onClick={handleSignOut} tooltip="Log Out">
+                    <LogOut />
+                    <span>Log Out</span>
+                </SidebarMenuButton>
+            </div>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

@@ -4,10 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useUser, useAuth } from "@/firebase";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { motion } from 'framer-motion';
 import { mockUserProfile } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,69 +13,23 @@ import { Settings } from "lucide-react";
 
 
 export default function SettingsPage() {
-    const { user } = useUser();
-    const auth = useAuth();
     const { toast } = useToast();
 
     const [name, setName] = useState(mockUserProfile.name);
     const [phone, setPhone] = useState(mockUserProfile.phone);
     
-    useEffect(() => {
-        if (user) {
-            setName(user.displayName || mockUserProfile.name);
-        }
-    }, [user]);
-
     const handleSaveChanges = async () => {
-        if (!user || !auth?.currentUser) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "You must be logged in to save changes.",
-            });
-            return;
-        };
-
-        try {
-            await updateProfile(auth.currentUser, { displayName: name });
-            // In a real app, you would also update phone in Firestore.
-            toast({
-                title: "Profile Updated",
-                description: "Your changes have been saved successfully.",
-            });
-
-        } catch (error: any) {
-             toast({
-                variant: "destructive",
-                title: "Update Failed",
-                description: error.message,
-            });
-        }
+        toast({
+            title: "Profile Updated",
+            description: "Your changes have been saved successfully.",
+        });
     };
 
     const handleChangePassword = async () => {
-        if (!user?.email || !auth) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "No email address found for your account.",
-            });
-            return;
-        }
-
-        try {
-            await sendPasswordResetEmail(auth, user.email);
-            toast({
-                title: "Password Reset Email Sent",
-                description: `An email has been sent to ${user.email} with instructions to reset your password.`,
-            });
-        } catch (error: any) {
-             toast({
-                variant: "destructive",
-                title: "Failed to Send Email",
-                description: error.message,
-            });
-        }
+        toast({
+            title: "Password Reset Email Sent",
+            description: `This is a mock action. In a real app, an email would be sent to ${mockUserProfile.email}.`,
+        });
     }
 
   return (
@@ -89,11 +41,11 @@ export default function SettingsPage() {
       <Card className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-md p-6 border-white/10">
         <CardHeader className="flex flex-col md:flex-row items-center gap-6">
             <Avatar className="h-24 w-24 border-4 border-primary">
-                <AvatarImage src={user?.photoURL || `https://picsum.photos/seed/${user?.uid}/100/100`} />
-                <AvatarFallback>{(user?.displayName || mockUserProfile.name)?.[0]}</AvatarFallback>
+                <AvatarImage src={`https://picsum.photos/seed/user-profile/100/100`} />
+                <AvatarFallback>{mockUserProfile.name[0]}</AvatarFallback>
             </Avatar>
             <div className="text-center md:text-left">
-                <CardTitle className="text-2xl">{user?.displayName || mockUserProfile.name}</CardTitle>
+                <CardTitle className="text-2xl">{mockUserProfile.name}</CardTitle>
                 <CardDescription className="text-accent">{mockUserProfile.role}</CardDescription>
                 <CardDescription>Joined on {mockUserProfile.joined}</CardDescription>
             </div>
@@ -105,7 +57,7 @@ export default function SettingsPage() {
             </div>
              <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" value={user?.email || mockUserProfile.email} disabled/>
+                <Input id="email" type="email" value={mockUserProfile.email} disabled/>
             </div>
              <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>

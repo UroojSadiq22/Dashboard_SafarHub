@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUser } from "@/firebase";
+import { useEffect, useState } from "react";
 
 
 const navLinks = [
@@ -22,8 +22,15 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock login state
+
+  // In a real app, this would be replaced with a proper auth hook
+  useEffect(() => {
+    // This is a mock check. For now, we assume user is not logged in on public pages.
+    // Dashboard pages handle their own state.
+    setIsLoggedIn(false);
+  }, [pathname]);
 
   const NavLink = ({
     href,
@@ -80,11 +87,11 @@ export default function Header() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end gap-2">
-          {!isUserLoading && user ? (
+          {isLoggedIn ? (
               <Button variant="outline" asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
-          ) : !isUserLoading && (
+          ) : (
             <>
               <Button variant="ghost" asChild>
                 <Link href="/login">Log in</Link>
@@ -117,13 +124,13 @@ export default function Header() {
                     </SheetClose>
                   ))}
                   <div className="border-t pt-4">
-                  {!isUserLoading && user ? (
+                  {isLoggedIn ? (
                      <div className="flex flex-col gap-4">
                         <SheetClose asChild>
                            <Link href="/dashboard" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Dashboard</Link>
                         </SheetClose>
                      </div>
-                  ) : !isUserLoading && (
+                  ) : (
                      <div className="flex flex-col gap-4">
                        <SheetClose asChild>
                          <Link href="/login" className="text-lg text-muted-foreground font-medium transition-colors hover:text-primary">Log in</Link>

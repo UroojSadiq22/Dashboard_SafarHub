@@ -14,28 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MountainSnow } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/firebase";
-import { 
-  signInWithEmailAndPassword, 
-  GoogleAuthProvider,
-  signInWithPopup
-} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-type Role = 'user' | 'agent' | 'admin';
-
-const getMockRole = (email?: string | null): Role => {
-  if (!email) return 'user';
-  if (email.includes('admin')) return 'admin';
-  if (email.includes('agent')) return 'agent';
-  return 'user';
-}
-
 export default function LoginPage() {
-  const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
@@ -43,44 +27,33 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-     if (!auth) return;
     setIsLoading(true);
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: "Login Successful" });
-      const role = getMockRole(cred.user.email);
-      router.push(`/dashboard/${role}`);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
+
+    // Mock role detection
+    let role = 'user';
+    if (email.includes('agent')) {
+      role = 'agent';
+    } else if (email.includes('admin')) {
+      role = 'admin';
     }
+
+    setTimeout(() => {
+      toast({ title: "Login Successful" });
+      router.push(`/dashboard/${role}`);
+      setIsLoading(false);
+    }, 1000);
   };
 
-  const handleGoogleSignIn = async () => {
-    if (!auth) return;
+  const handleGoogleSignIn = () => {
     setIsGoogleLoading(true);
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
+    // Mock Google sign-in
+    setTimeout(() => {
       toast({ title: "Google Sign-In Successful" });
-      const role = getMockRole(result.user.email);
-      router.push(`/dashboard/${role}`);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Google Sign-In Failed",
-        description: error.message,
-      });
-    } finally {
+      router.push('/dashboard/user');
       setIsGoogleLoading(false);
-    }
+    }, 1000);
   };
 
 
